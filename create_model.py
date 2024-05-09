@@ -74,12 +74,10 @@ class Para2ImUNet(UNetModel):
     ):
         self.n_param = n_param
         super().__init__(*args, **kwargs)
-
         self.token_embedding = nn.Linear(n_param, self.model_channels * 4)
 
     def convert_to_fp16(self):
         super().convert_to_fp16()
-
         self.token_embedding.to(th.float16)
         self.token_linear.to(th.float16)
 
@@ -90,12 +88,12 @@ class Para2ImUNet(UNetModel):
 
         return outputs
 
-    def forward(self, x, timesteps, y=None):
+    def forward(self, x, y=None):
         hs = []
-        emb = self.time_embed(timestep_embedding(timesteps, self.model_channels))
+        #emb = self.time_embed(timestep_embedding(timesteps, self.model_channels))
         if y != None:
-            text_outputs = self.get_param_emb(y)
-            emb = emb + text_outputs.to(emb)
+            emb = self.get_param_emb(y) #previously text_outputs
+            #emb = emb + text_outputs.to(emb)
 
         h = x.type(self.dtype)
         for module in self.input_blocks:
