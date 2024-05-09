@@ -27,8 +27,8 @@ def get_labels_narray(base_path):
     #generating initial conditions
     ic_inputs = r**(-slopes.reshape(-1,1,1))*((r<4) & (r>0.4)).astype(float)
     #standardizing
-    means = ic_inputs.reshape(ic_inputs.shape[0], -1).mean(axis=1)
-    stds = ic_inputs.reshape(ic_inputs.shape[0], -1).std(axis=1)
+    means = ic_inputs.reshape(ic_inputs.shape[0], -1).mean(axis=1).reshape(-1,1)
+    stds = ic_inputs.reshape(ic_inputs.shape[0], -1).std(axis=1).reshape(-1,1)
     ic_inputs = (ic_inputs-means)/stds
     
     return labels, ic_inputs
