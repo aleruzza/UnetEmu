@@ -77,8 +77,6 @@ def train(params, model):
             optim.zero_grad() #reset the gradients
             x = x.to(params['device'])
             x_pred = model(ic, p)
-            print(x.shape)
-            print(x_pred.shape)
             loss = loss_mse(x, x_pred)
             loss.backward()
             
