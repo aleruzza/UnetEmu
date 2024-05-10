@@ -86,7 +86,7 @@ def train(params, model):
             optim.step()
             
             if params['save_model']:
-                if ep%params['save_freq']==0:
+                if ep%params['savefreq']==0:
                     torch.save(model.state_dict(), params['savedir'] + f"/model__epoch_{ep}_test_{params['name']}.pth")
                     
 
