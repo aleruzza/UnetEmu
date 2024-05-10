@@ -143,6 +143,7 @@ class TextImageDataset(Dataset):
     def __getitem__(self, ind):
         original_image = np.float32(self.data[ind])
         arr = np.expand_dims(original_image,axis=0)
-        return th.tensor(arr),th.tensor(np.float32(self.labels[ind])), th.tensor(self.ics[ind])
+        ic = np.expand_dims(np.float32(self.ics[ind]), axis=0)
+        return th.tensor(arr),th.tensor(np.float32(self.labels[ind])), th.tensor(ic)
     
 
