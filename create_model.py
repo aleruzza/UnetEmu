@@ -92,7 +92,7 @@ class Para2ImUNet(UNetModel):
         hs = []
         #emb = self.time_embed(timestep_embedding(timesteps, self.model_channels))
         if y != None:
-            emb = self.get_param_emb(y).to(emb) #previously text_outputs
+            emb = self.get_param_emb(y) #previously text_outputs
             #emb = emb + text_outputs.to(emb)
 
         h = x.type(self.dtype)
