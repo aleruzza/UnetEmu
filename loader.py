@@ -19,13 +19,13 @@ def get_labels_narray(base_path):
     
     #initial conditions
     slopes = np.array(paradf['SigmaSlope'])
-    x = np.linspace(-4, 4, 128)
-    y = np.linspace(-4, 4, 128)
+    x = np.linspace(-3, 3, 128)
+    y = np.linspace(-3, 3, 128)
     xx, yy = np.meshgrid(x, y)
     r = np.sqrt(xx**2+yy**2)
     
     #generating initial conditions
-    ic_inputs = r**(-slopes.reshape(-1,1,1))*((r<4) & (r>0.4)).astype(float)
+    ic_inputs = r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)).astype(float)
     #standardizing
     means = ic_inputs.reshape(ic_inputs.shape[0], -1).mean(axis=1).reshape(-1,1,1)
     stds = ic_inputs.reshape(ic_inputs.shape[0], -1).std(axis=1).reshape(-1,1,1)
