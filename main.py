@@ -170,7 +170,7 @@ if __name__ == "__main__":
                 #TODO: implement possibility to resume
                 exit()
         else:
-            emulator = create_nnmodel(5, params['image_size'])
+            emulator = create_nnmodel(5, params['image_size']).to(device=params['device'])
             
 
         train(params=params, model=emulator)
