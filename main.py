@@ -94,7 +94,7 @@ def train(params, model):
             optim.zero_grad() #reset the gradients
             x = x.to(params['device'])
             x_pred = model(ic, p)
-            loss = loss_mse(x, x_pred)
+            loss = loss_mse(x, x_pred).to(device=params['device'])
             loss.backward()
             mean_mse = np.append(mean_mse, [loss.item()])
             pbar.set_description(f'loss: {loss.item():.4f}')
