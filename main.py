@@ -1,16 +1,13 @@
 import os
-import copy
+import wandb
 import pandas as pd
 from tqdm import tqdm
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import DataLoader
 import numpy as np
 from params import params
 from loader import TextImageDataset, PretrainDataset
 from create_model import create_nnmodel
-from torch.utils.tensorboard import SummaryWriter
     
     
 def train(params, model):
@@ -46,6 +43,23 @@ def train(params, model):
         pin_memory=True
     )
 
+    #loading test set
+    test_paradf = pd.read_csv(f'data/testpara.csv', index_col=0)
+    slopes = np.array(test_paradf[['SigmaSlope']])
+    #generating initial conditions
+    x = np.linspace(-3, 3, 128)
+    y = np.linspace(-3, 3, 128)
+    xx, yy = np.meshgrid(x, y)
+    r = np.sqrt(xx**2+yy**2)
+    ict = r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)).astype(float)
+    #standardizing
+    means = ict.reshape(ict.shape[0], -1).mean(axis=1).reshape(-1,1,1)
+    stds = ict.reshape(ict.shape[0], -1).std(axis=1).reshape(-1,1,1)
+    ict = (ict-means)/stds
+    testparam = torch.tensor(np.float32(np.log10(np.array(test_paradf[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']]))))
+    testparam =  testparam.to(params['device'])
+    xtest = torch.tensor(np.expand_dims(np.load('data/datatest128_log.npy'), axis=1)).to(params['device'])
+
     #training loop
     params_to_optimize = [
             {'params': model.parameters()}
@@ -64,6 +78,7 @@ def train(params, model):
     optim = torch.optim.Adam(params_to_optimize, lr=params['lr'])
 
     #loop
+    wandb.watch(model, criterion=loss_mse, log_freq=10)
     for ep in range(params['nepochs']):
         print(f'epoch {ep}')
         model.train() #setting model in training mode
@@ -73,20 +88,30 @@ def train(params, model):
             optim.param_groups[0]['lr'] = params['lr']*(1-ep/params['nepochs'])
             
         pbar = tqdm(dataloader)
+        mean_mse = np.array([])
         for i, (x, p, ic) in enumerate(pbar):
             optim.zero_grad() #reset the gradients
             x = x.to(params['device'])
             x_pred = model(ic, p)
             loss = loss_mse(x, x_pred)
             loss.backward()
-            
+            mean_mse = np.append(mean_mse, [loss.item()])
             pbar.set_description(f'loss: {loss.item():.4f}')
             optim.step()
             
             if params['save_model']:
                 if ep%params['savefreq']==0:
                     torch.save(model.state_dict(), params['savedir'] + f"/model__epoch_{ep}_test_{params['name']}.pth")
-                    
+        
+        x_pred_t = model(ict, testparam)
+        #xy = np.linspace(-3,3,128)
+        mse_test = ((xtest-x_pred_t)**2).mean()
+        wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
+        
+def getmse(im1, im2, x, y):
+    xx, yy = np.meshgrid(x,y)
+    rr = np.sqrt(xx**2+yy**2)
+    return (((im1-im2)**2)*((rr<3) & (rr>0.3))).mean()
 
 def test(emulator):
     """TODO: implement this function
@@ -103,8 +128,8 @@ def test(emulator):
     
     #initial conditions
     slopes = np.array(test_paradf['SigmaSlope'])
-    x = np.linspace(-4, 4, 128)
-    y = np.linspace(-4, 4, 128)
+    x = np.linspace(-3, 3, 128)
+    y = np.linspace(-3, 3, 128)
     xx, yy = np.meshgrid(x, y)
     r = np.sqrt(xx**2+yy**2)
     ic_input_tests = torch.tensor(np.float32(r**(-slopes.reshape(-1,1,1))*((r<4) & (r>0.4)).astype(float)))
@@ -134,16 +159,17 @@ if __name__ == "__main__":
         newparafile = pd.DataFrame([params]).set_index('index')
     newparafile.to_csv('parahist.csv')
     
-    #begin train
-    if params['resume']:
-        if not os.path.exists(params['resume_from']):
-            print('Error! the model wich you want to resume from does not exist!\n Exiting...')
-            exit()
+    with wandb.init(project='emulator_unet', config=params, name=params['name']):
+        #begin train
+        if params['resume']:
+            if not os.path.exists(params['resume_from']):
+                print('Error! the model wich you want to resume from does not exist!\n Exiting...')
+                exit()
+            else:
+                #TODO: implement possibility to resume
+                exit()
         else:
-            #TODO: implement possibility to resume
-            exit()
-    else:
-        emulator = create_nnmodel(5, params['image_size'])
-        
+            emulator = create_nnmodel(5, params['image_size'])
+            
 
-    train(params=params, model=emulator)
+        train(params=params, model=emulator)
