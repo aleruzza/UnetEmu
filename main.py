@@ -93,6 +93,8 @@ def train(params, model):
         for i, (x, p, ic) in enumerate(pbar):
             optim.zero_grad() #reset the gradients
             x = x.to(params['device'])
+            p = p.to(params['device'])
+            ic = ic.to(params['device'])
             x_pred = model(ic, p)
             loss = loss_mse(x, x_pred).to(device=params['device'])
             loss.backward()
