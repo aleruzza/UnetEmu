@@ -55,7 +55,7 @@ def train(params, model):
     #standardizing
     means = ict.reshape(ict.shape[0], -1).mean(axis=1).reshape(-1,1,1)
     stds = ict.reshape(ict.shape[0], -1).std(axis=1).reshape(-1,1,1)
-    ict = (ict-means)/stds
+    ict = np.expand_dims((ict-means)/stds, axis=1)
     ict = torch.tensor(ict).to(device=params['device'])
     testparam = torch.tensor(np.float32(np.log10(np.array(test_paradf[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']]))))
     testparam =  testparam.to(params['device'])
