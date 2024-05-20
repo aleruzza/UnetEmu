@@ -103,15 +103,16 @@ def train(params, model):
             pbar.set_description(f'loss: {loss.item():.4f}')
             optim.step()
             
-            if params['save_model']:
-                if ep%params['savefreq']==0:
-                    torch.save(model.state_dict(), params['savedir'] + f"/model__epoch_{ep}_test_{params['name']}.pth")
+        if params['save_model']:
+            if ep%params['savefreq']==0:
+                torch.save(model.state_dict(), params['savedir'] + f"/model__epoch_{ep}_test_{params['name']}.pth")
         
-        model.eval()
-        x_pred_t = model(ict, testparam)
-        #xy = np.linspace(-3,3,128)
-        mse_test = ((xtest-x_pred_t)**2).mean()
-        wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
+        with torch.inference_mode():
+            model.eval()
+            x_pred_t = model(ict, testparam)
+            #xy = np.linspace(-3,3,128)
+            mse_test = ((xtest-x_pred_t)**2).mean()
+            wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
         
 def getmse(im1, im2, x, y):
     xx, yy = np.meshgrid(x,y)
