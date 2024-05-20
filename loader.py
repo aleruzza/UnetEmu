@@ -153,9 +153,10 @@ class TextImageDataset(Dataset):
     def __getitem__(self, ind):
         original_image = np.float32(self.data[ind])
         arr = scaleandlog(np.expand_dims(original_image,axis=0), 1e-5)
+        ic = np.expand_dims(np.float32(self.ics[ind]), axis=0)
+        arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)
-        ic = np.expand_dims(np.float32(self.ics[ind]), axis=0)
-        return th.tensor(arr), th.tensor(np.float32(self.labels[ind])), th.tensor(ic)
+        return arr, th.tensor(np.float32(self.labels[ind])), th.tensor(ic)
     
 
