@@ -154,7 +154,7 @@ class TextImageDataset(Dataset):
 
     def __getitem__(self, ind):
         original_image = np.float32(self.data[ind])
-        arr = scaleandlog(np.expand_dims(original_image,axis=0), 1e-3)
+        arr = scaleandlog(np.expand_dims(original_image,axis=0), 1e-5)
         if self.rotaugm:
             arr = self.transform(arr)
         ic = np.expand_dims(np.float32(self.ics[ind]), axis=0)

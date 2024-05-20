@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from params import params
-from loader import TextImageDataset, PretrainDataset
+from loader import TextImageDataset, PretrainDataset, scaleandlog
 from create_model import create_nnmodel
     
     
@@ -52,13 +52,14 @@ def train(params, model):
     r = np.sqrt(xx**2+yy**2)
     ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
     #standardizing
-    means = ict.reshape(ict.shape[0], -1).mean(axis=1).reshape(-1,1,1)
-    stds = ict.reshape(ict.shape[0], -1).std(axis=1).reshape(-1,1,1)
-    ict = np.expand_dims((ict-means)/stds, axis=1)
+    #means = ict.reshape(ict.shape[0], -1).mean(axis=1).reshape(-1,1,1)
+    #stds = ict.reshape(ict.shape[0], -1).std(axis=1).reshape(-1,1,1)
+    ict = np.expand_dims(scaleandlog(ict,1), axis=1)
     ict = torch.tensor(ict).to(device=params['device'])
     testparam = torch.tensor(np.float32(np.log10(np.array(test_paradf[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']]))))
     testparam =  testparam.to(params['device'])
     xtest = torch.tensor(np.expand_dims(np.load('data/datatest128_log.npy'), axis=1)).to(params['device'])
+    xtest = scaleandlog(xtest,1)
 
     #training loop
     params_to_optimize = [
