@@ -59,6 +59,13 @@ def train(params, model):
     testparam =  testparam.to(params['device'])
     xtest = torch.tensor(np.expand_dims(scaleandlog(np.load(f'{params["datadir"]}/datatest.npy'),1), axis=1)).to(params['device'])
 
+    #logging test images
+    images = []
+    for i in range(params['n_test_log_images']):
+        image = wandb.Image(xtest[i].to('cpu'), mode='F')
+        images.append(image)
+    wandb.log({"testset_simulations": images})
+            
     #training loop
     params_to_optimize = [
             {'params': model.parameters()}
@@ -111,6 +118,12 @@ def train(params, model):
             xy = np.linspace(-3,3,128)
             mse_test = getmse(x_pred_t, xtest, xy, xy)
             wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
+            #log some test images
+            images = []
+            for i in range(params['n_test_log_images']):
+                image = wandb.Image(x_pred_t[i].to('cpu'), mode='F')
+                images.append(image)
+            wandb.log({"testset_emulations": images})
         
 def getmse(im1, im2, x, y):
     #xx, yy = np.meshgrid(x,y)
