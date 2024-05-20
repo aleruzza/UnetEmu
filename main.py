@@ -57,8 +57,7 @@ def train(params, model):
     ict = torch.tensor(ict).to(device=params['device'])
     testparam = torch.tensor(np.float32(np.log10(np.array(test_paradf[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']]))))
     testparam =  testparam.to(params['device'])
-    xtest = torch.tensor(np.expand_dims(np.load(f'{params["datadir"]}/datatest.npy'), axis=1)).to(params['device'])
-    xtest = scaleandlog(xtest,1)
+    xtest = torch.tensor(np.expand_dims(scaleandlog(np.load(f'{params["datadir"]}/datatest.npy'),1), axis=1)).to(params['device'])
 
     #training loop
     params_to_optimize = [
