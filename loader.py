@@ -9,6 +9,7 @@ import torchvision.transforms as T
 
 ################### Normalization functions ###################################
 def scaleandlog(data, scale):
+    data = np.nan_to_num(data)
     return np.log10(1 + data/scale)
 
 

@@ -113,9 +113,10 @@ def train(params, model):
             wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
         
 def getmse(im1, im2, x, y):
-    xx, yy = np.meshgrid(x,y)
-    rr = np.sqrt(xx**2+yy**2)
-    return (((im1-im2)**2)*((rr<3) & (rr>0.3))).mean()
+    #xx, yy = np.meshgrid(x,y)
+    #rr = np.sqrt(xx**2+yy**2)
+    #return (((im1-im2)**2)*((rr<3) & (rr>0.3))).mean()
+    return ((im1-im2)**2).mean()
     
     
 
