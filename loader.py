@@ -119,7 +119,6 @@ class TextImageDataset(Dataset):
         folder="",
         image_size=64,
         shuffle=False,
-        uncond_p=0.0,
         rotaugm=False
     ):
         super().__init__()
@@ -130,7 +129,6 @@ class TextImageDataset(Dataset):
         self.shuffle = shuffle
         self.prefix = folder
         self.image_size = image_size
-        self.uncond_p = uncond_p
         
         if rotaugm:
             self.transform = T.RandomRotation(90)

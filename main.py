@@ -28,9 +28,8 @@ def train(params, model):
         dataset = TextImageDataset(
                 folder=params['datadir'],
                 image_size=params['image_size'],
-                uncond_p=params['drop_prob'], # only used when drop_para=True
                 shuffle=True,
-                n_param=params['n_param']
+                rotaugm=params['rotaugm']
             )
 
     # data loader setup
