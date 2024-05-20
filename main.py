@@ -30,8 +30,7 @@ def train(params, model):
                 image_size=params['image_size'],
                 uncond_p=params['drop_prob'], # only used when drop_para=True
                 shuffle=True,
-                n_param=params['n_param'],
-                drop_para=True if params['cond']==True else False
+                n_param=params['n_param']
             )
 
     # data loader setup
@@ -110,39 +109,17 @@ def train(params, model):
         with torch.inference_mode():
             model.eval()
             x_pred_t = model(ict, testparam)
-            #xy = np.linspace(-3,3,128)
-            mse_test = ((xtest-x_pred_t)**2).mean()
+            xy = np.linspace(-3,3,128)
+            mse_test = getmse(x_pred_t, xtest, xy, xy)
             wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
         
 def getmse(im1, im2, x, y):
     xx, yy = np.meshgrid(x,y)
     rr = np.sqrt(xx**2+yy**2)
     return (((im1-im2)**2)*((rr<3) & (rr>0.3))).mean()
-
-def test(emulator):
-    """TODO: implement this function
-
-    Parameters
-    ----------
-    emulator : _type_
-        _description_
-    """
-    #parameters for test set
-    test_paradf = pd.read_csv(f'data/testpara.csv', index_col=0)
-    test_param = torch.tensor(np.float32(np.log10(np.array(test_paradf[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']]))))
-    test_param =  test_param.to(params['device'])
     
-    #initial conditions
-    slopes = np.array(test_paradf['SigmaSlope'])
-    x = np.linspace(-3, 3, 128)
-    y = np.linspace(-3, 3, 128)
-    xx, yy = np.meshgrid(x, y)
-    r = np.sqrt(xx**2+yy**2)
-    ic_input_tests = torch.tensor(np.float32(r**(-slopes.reshape(-1,1,1))*((r<4) & (r>0.4)).astype(float)))
-    means = ic_input_tests.reshape(ic_input_tests.shape[0], -1).mean(axis=1)
-    stds = ic_input_tests.reshape(ic_input_tests.shape[0], -1).std(axis=1)
-    ic_input_tests = (ic_input_tests-means)/stds
     
+
 if __name__ == "__main__":
     
     #checking if exists and creating output directory if it does not

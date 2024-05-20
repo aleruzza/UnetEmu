@@ -5,7 +5,14 @@ import torch as th
 import pandas as pd
 from torch.utils.data import Dataset
 import numpy as np
+import torchvision.transforms as T
 
+################### Normalization functions ###################################
+def scaleandlog(data, scale):
+    return np.log10(1 + data/scale)
+
+
+############ functions that read numpy array data ##############################
 
 def get_image_files_narray(base_path):
     image_files = np.load(f'{base_path}/data.npy')
@@ -26,10 +33,11 @@ def get_labels_narray(base_path):
     
     #generating initial conditions
     ic_inputs = r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)).astype(float)
+    ic_inputs = scaleandlog(ic_inputs, 1)
     #standardizing
-    means = ic_inputs.reshape(ic_inputs.shape[0], -1).mean(axis=1).reshape(-1,1,1)
-    stds = ic_inputs.reshape(ic_inputs.shape[0], -1).std(axis=1).reshape(-1,1,1)
-    ic_inputs = (ic_inputs-means)/stds
+    #means = ic_inputs.reshape(ic_inputs.shape[0], -1).mean(axis=1).reshape(-1,1,1)
+    #stds = ic_inputs.reshape(ic_inputs.shape[0], -1).std(axis=1).reshape(-1,1,1)
+    #ic_inputs = (ic_inputs-means)/stds
     
     return labels, ic_inputs
 
@@ -40,6 +48,9 @@ def get_pretraining_data(base_path, n=10):
     np.random.shuffle(dataset)
     return dataset[0:n]
 
+#################################################################################
+
+###################### Datasets #################################################
 
 class PretrainDataset(Dataset):
     """Dataset for pretraining
@@ -52,7 +63,7 @@ class PretrainDataset(Dataset):
         folder="",
         image_size=128,
         shuffle=False,
-        n_param =6,
+        n_param =5,
         n_pretrain=100
     ):
         """Init
@@ -109,19 +120,20 @@ class TextImageDataset(Dataset):
         image_size=64,
         shuffle=False,
         uncond_p=0.0,
-        n_param=2,
-        drop_para=False
+        rotaugm=False
     ):
         super().__init__()
         folder = Path(folder)
         self.data = get_image_files_narray(folder)
         self.labels, self.ics = get_labels_narray(folder)
-        self.n_param = n_param
+        self.rotaugm = rotaugm
         self.shuffle = shuffle
         self.prefix = folder
         self.image_size = image_size
         self.uncond_p = uncond_p
-        self.drop_para=drop_para
+        
+        if rotaugm:
+            self.transform = T.RandomRotation(90)
 
     def __len__(self):
         return len(self.labels)
@@ -142,8 +154,10 @@ class TextImageDataset(Dataset):
 
     def __getitem__(self, ind):
         original_image = np.float32(self.data[ind])
-        arr = np.expand_dims(original_image,axis=0)
+        arr = scaleandlog(np.expand_dims(original_image,axis=0), 1e-3)
+        if self.rotaugm:
+            arr = self.transform(arr)
         ic = np.expand_dims(np.float32(self.ics[ind]), axis=0)
-        return th.tensor(arr),th.tensor(np.float32(self.labels[ind])), th.tensor(ic)
+        return th.tensor(arr), th.tensor(np.float32(self.labels[ind])), th.tensor(ic)
     
 
