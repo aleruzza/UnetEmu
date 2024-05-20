@@ -16,6 +16,8 @@ params = {
     'batch_size': 64,
     'rotaugm': True,
     'image_size': 128,
+    'logima_freq': 20,
+    'n_test_log_images': 10,
     'pretrain': False,
     'n_param' : 5,
     'n_pretrain': 10000 #note: it must be <101,000

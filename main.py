@@ -119,11 +119,13 @@ def train(params, model):
             mse_test = getmse(x_pred_t, xtest, xy, xy)
             wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
             #log some test images
-            images = []
-            for i in range(params['n_test_log_images']):
-                image = wandb.Image(x_pred_t[i].to('cpu'), mode='F')
-                images.append(image)
-            wandb.log({"testset_emulations": images})
+            
+            if ep%params['logima_freq']==0:
+                images = []
+                for i in range(params['n_test_log_images']):
+                    image = wandb.Image(x_pred_t[i].to('cpu'), mode='F')
+                    images.append(image)
+                wandb.log({"testset_emulations": images})
         
 def getmse(im1, im2, x, y):
     #xx, yy = np.meshgrid(x,y)
