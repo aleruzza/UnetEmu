@@ -51,7 +51,7 @@ def train(params, model):
     y = np.linspace(-3, 3, 128)
     xx, yy = np.meshgrid(x, y)
     r = np.sqrt(xx**2+yy**2)
-    ict = r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)).astype(float)
+    ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
     #standardizing
     means = ict.reshape(ict.shape[0], -1).mean(axis=1).reshape(-1,1,1)
     stds = ict.reshape(ict.shape[0], -1).std(axis=1).reshape(-1,1,1)
