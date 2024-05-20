@@ -91,6 +91,7 @@ def train(params, model):
         pbar = tqdm(dataloader)
         mean_mse = np.array([])
         for i, (x, p, ic) in enumerate(pbar):
+            model.train()
             optim.zero_grad() #reset the gradients
             x = x.to(params['device'])
             p = p.to(params['device'])
@@ -106,6 +107,7 @@ def train(params, model):
                 if ep%params['savefreq']==0:
                     torch.save(model.state_dict(), params['savedir'] + f"/model__epoch_{ep}_test_{params['name']}.pth")
         
+        model.eval()
         x_pred_t = model(ict, testparam)
         #xy = np.linspace(-3,3,128)
         mse_test = ((xtest-x_pred_t)**2).mean()
