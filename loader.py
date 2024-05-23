@@ -86,7 +86,10 @@ def get_testset(params):
     #stds = ict.reshape(ict.shape[0], -1).std(axis=1).reshape(-1,1,1)
     testparam = torch.tensor(np.float32(getlabels(test_paradf)))
     testparam =  testparam.to(params['device'])
-    xtest = torch.tensor(np.expand_dims(scaleandlog(np.load(f'{params["datadir"]}/datatest.npy'),1e-5), axis=1)).to(params['device'])
+    xtest = scaleandlog(np.load(f'{params["datadir"]}/datatest.npy'),1e-5)
+    if not params['mdeco']:
+        xtest = np.expand_dims(xtest, axis=1)
+    xtest = torch.tensor(xtest).to(params['device'])
 
     #logging test images
     images = []
@@ -180,6 +183,7 @@ class TextImageDataset(Dataset):
         self.rotaugm = rotaugm
         self.shuffle = shuffle
         self.prefix = folder
+        self.mdeco = mdeco
         self.image_size = image_size
         
         if rotaugm:
@@ -204,7 +208,8 @@ class TextImageDataset(Dataset):
 
     def __getitem__(self, ind):
         original_image = np.float32(self.data[ind])
-        arr = scaleandlog(np.expand_dims(original_image,axis=0), 1e-5)
+        if not self.mdeco:
+            arr = scaleandlog(np.expand_dims(original_image,axis=0), 1e-5)
         arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)
