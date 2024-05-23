@@ -19,11 +19,15 @@ def get_image_files_narray(base_path):
     image_files = np.load(f'{base_path}/data.npy')
     return image_files
 
+def getlabels(dataframe):
+    dataframe[['PlanetMass', 'Alpha', 'InvStokes1']] = np.log10(dataframe[['PlanetMass', 'Alpha', 'InvStokes1']])
+    labels = np.array(dataframe[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']])
+    labels = np.log10(labels)
+    return labels
 
 def get_labels_narray(base_path):
     paradf = pd.read_csv(f'{base_path}/run4.csv', index_col=0)
-    labels = np.array(paradf[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']])
-    labels = np.log10(labels)
+    labels = getlabels(paradf)
     
     #initial conditions
     slopes = np.array(paradf['SigmaSlope'])

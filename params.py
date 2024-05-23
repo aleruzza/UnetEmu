@@ -18,6 +18,8 @@ params = {
     'image_size': 128,
     'logima_freq': 20,
     'n_test_log_images': 10,
+    'num_chanels': 64,
+    'num_res_blocks': 3,
     'pretrain': False,
     'n_param' : 5,
     'n_pretrain': 10000 #note: it must be <101,000

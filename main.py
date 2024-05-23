@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from params import params
-from loader import TextImageDataset, PretrainDataset, scaleandlog
+from loader import TextImageDataset, PretrainDataset, scaleandlog, getlabels
 from create_model import create_nnmodel
     
     
@@ -55,7 +55,7 @@ def train(params, model):
     #stds = ict.reshape(ict.shape[0], -1).std(axis=1).reshape(-1,1,1)
     ict = np.expand_dims(scaleandlog(ict,1), axis=1)
     ict = torch.tensor(ict).to(device=params['device'])
-    testparam = torch.tensor(np.float32(np.log10(np.array(test_paradf[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']]))))
+    testparam = getlabels(test_paradf)
     testparam =  testparam.to(params['device'])
     xtest = torch.tensor(np.expand_dims(scaleandlog(np.load(f'{params["datadir"]}/datatest.npy'),1e-5), axis=1)).to(params['device'])
 
@@ -167,7 +167,7 @@ if __name__ == "__main__":
                 #TODO: implement possibility to resume
                 exit()
         else:
-            emulator = create_nnmodel(5, params['image_size']).to(device=params['device'])
+            emulator = create_nnmodel(5, params['image_size'], num_channels=params['num_channels'], num_res_blocks=params['num_res_blocks']).to(device=params['device'])
             
 
         train(params=params, model=emulator)
