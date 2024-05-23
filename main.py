@@ -49,7 +49,7 @@ def train(params, model):
     )
 
         
-    ict, testparam, xtest = get_testset()
+    ict, testparam, xtest = get_testset(params)
             
     #training loop
     params_to_optimize = [
