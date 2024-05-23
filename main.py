@@ -55,7 +55,7 @@ def train(params, model):
     #stds = ict.reshape(ict.shape[0], -1).std(axis=1).reshape(-1,1,1)
     ict = np.expand_dims(scaleandlog(ict,1), axis=1)
     ict = torch.tensor(ict).to(device=params['device'])
-    testparam = getlabels(test_paradf)
+    testparam = torch.tensor(getlabels(test_paradf))
     testparam =  testparam.to(params['device'])
     xtest = torch.tensor(np.expand_dims(scaleandlog(np.load(f'{params["datadir"]}/datatest.npy'),1e-5), axis=1)).to(params['device'])
 
