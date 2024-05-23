@@ -34,7 +34,9 @@ def train(params, model):
                 folder=params['datadir'],
                 image_size=params['image_size'],
                 shuffle=True,
-                rotaugm=params['rotaugm']
+                rotaugm=params['rotaugm'],
+                mdeco=params['mdeco'],
+                device=params['device']
             )
 
     # data loader setup
@@ -43,7 +45,7 @@ def train(params, model):
         batch_size=params['batch_size'],
         shuffle=True,
         num_workers=0,
-        pin_memory=True
+        pin_memory=True,
     )
 
         

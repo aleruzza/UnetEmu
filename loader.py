@@ -51,7 +51,7 @@ def get_pretraining_data(base_path, n=10):
     np.random.shuffle(dataset)
     return dataset[0:n]
 
-def generate_ict(slopes, params):
+def generate_ict(slopes, mdeco, device):
      #generating initial conditions
     x = np.linspace(-3, 3, 128)
     y = np.linspace(-3, 3, 128)
@@ -59,9 +59,9 @@ def generate_ict(slopes, params):
     r = np.sqrt(xx**2+yy**2)
     ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
     ict = np.expand_dims(scaleandlog(ict,1), axis=1)
-    ict = torch.tensor(ict).to(device=params['device'])
+    ict = torch.tensor(ict).to(device=device)
     
-    if params['mdeco']:
+    if mdeco:
         ft = np.fft.rfft(ict, axis=1)
         #remove the last k to make the input data divisible by 2 multiple times -> (1000x256x128)
         ft = ft[:,:-1,:]
@@ -80,7 +80,7 @@ def get_testset(params):
     test_paradf = pd.read_csv(f'{params["datadir"]}/testpara.csv', index_col=0)
     slopes = np.array(test_paradf[['SigmaSlope']])
     
-    ict = generate_ict(slopes, params)
+    ict = generate_ict(slopes, mdeco=params['mdeco'], device=params['device'])
     
     #standardizing
     #means = ict.reshape(ict.shape[0], -1).mean(axis=1).reshape(-1,1,1)
@@ -167,13 +167,15 @@ class TextImageDataset(Dataset):
         folder="",
         image_size=64,
         shuffle=False,
-        rotaugm=False
+        rotaugm=False, 
+        mdeco=False,
+        device='cpu'
     ):
         super().__init__()
         folder = Path(folder)
         self.data = get_image_files_narray(folder)
         self.labels, self.slopes = get_labels_narray(folder)
-        self.ics = generate_ict(self.slopes)
+        self.ics = generate_ict(self.slopes, mdeco=mdeco, device=device )
         self.rotaugm = rotaugm
         self.shuffle = shuffle
         self.prefix = folder
