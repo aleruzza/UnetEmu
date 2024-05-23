@@ -9,6 +9,11 @@ from params import params
 from loader import TextImageDataset, PretrainDataset, scaleandlog, getlabels, get_testset
 from create_model import create_nnmodel
     
+def image_from_mdeco(mdeco):
+    fft = mdeco[:,0,:,:]+1j*mdeco[:,1,:,:]
+    fft = np.pad(fft, pad_width=((0,0),(0,1),(0,0)))
+    images = np.fft.irfft(fft, axis=1)
+    return images
     
 def train(params, model):
     
@@ -96,8 +101,12 @@ def train(params, model):
             xy = np.linspace(-3,3,128)
             mse_test = getmse(x_pred_t, xtest, xy, xy)
             wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
-            #log some test images
             
+            if params['mdeco']:
+                mse_test_image = getmse(image_from_mdeco(x_pred_t), image_from_mdeco(xtest))
+                wandb.log({'mse_test_image':mse_test_image})
+            
+            #log some test images
             if ep%params['logima_freq']==0:
                 images = []
                 for i in range(params['n_test_log_images']):
