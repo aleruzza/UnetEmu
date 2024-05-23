@@ -22,7 +22,6 @@ def get_image_files_narray(base_path):
 def getlabels(dataframe):
     dataframe[['PlanetMass', 'Alpha', 'InvStokes1']] = np.log10(dataframe[['PlanetMass', 'Alpha', 'InvStokes1']])
     labels = np.array(dataframe[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']])
-    labels = np.log10(labels)
     return labels
 
 def get_labels_narray(base_path):
