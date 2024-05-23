@@ -208,5 +208,5 @@ class TextImageDataset(Dataset):
         arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)
-        return arr, th.tensor(np.float32(self.labels[ind])), th.tensor(self.ics[ind])
+        return arr, th.tensor(np.float32(self.labels[ind])), self.ics[ind]
     
