@@ -59,7 +59,6 @@ def generate_ict(slopes, mdeco, device):
     r = np.sqrt(xx**2+yy**2)
     ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
     ict = np.expand_dims(scaleandlog(ict,1), axis=1)
-    ict = torch.tensor(ict).to(device=device)
     
     if mdeco:
         ft = np.fft.rfft(ict, axis=1)
@@ -70,6 +69,8 @@ def generate_ict(slopes, mdeco, device):
         imag = np.expand_dims(ft.imag, axis=1)
         ict = np.concatenate([real, imag], axis=1)
         
+    ict = torch.tensor(ict).to(device=device)
+    
     return ict
 
 #################################################################################
