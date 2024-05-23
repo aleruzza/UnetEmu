@@ -68,8 +68,6 @@ def generate_ict(slopes, mdeco, device):
         real = np.expand_dims(ft.real, axis=1)
         imag = np.expand_dims(ft.imag, axis=1)
         ict = np.concatenate([real, imag], axis=1)
-        
-    ict = torch.tensor(ict).to(device=device)
     
     return ict
 
@@ -96,7 +94,9 @@ def get_testset(params):
         image = wandb.Image(xtest[i].to('cpu'), mode='F')
         images.append(image)
     wandb.log({"testset_simulations": images})
-        
+    
+    ict = torch.tensor(ict).to(device=params['device'])
+    
     return ict, testparam, xtest
 
 ###################### Datasets #################################################
@@ -208,5 +208,5 @@ class TextImageDataset(Dataset):
         arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)
-        return arr, th.tensor(np.float32(self.labels[ind])), self.ics[ind]
+        return arr, th.tensor(np.float32(self.labels[ind])), th.tensor(self.ics[ind])
     
