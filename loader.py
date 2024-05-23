@@ -58,7 +58,6 @@ def generate_ict(slopes, mdeco, device):
     xx, yy = np.meshgrid(x, y)
     r = np.sqrt(xx**2+yy**2)
     ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
-    ict = np.expand_dims(scaleandlog(ict,1), axis=1)
     
     if mdeco:
         ft = np.fft.rfft(ict, axis=1)
@@ -68,6 +67,10 @@ def generate_ict(slopes, mdeco, device):
         real = np.expand_dims(ft.real, axis=1)
         imag = np.expand_dims(ft.imag, axis=1)
         ict = np.concatenate([real, imag], axis=1)
+        
+    ict =scaleandlog(ict,1)
+    if not mdeco:
+        ict = np.expand_dims(ict, axis=1)
     
     return ict
 
