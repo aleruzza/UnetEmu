@@ -8,9 +8,9 @@ from nn import timestep_embedding
 from unet import UNetModel
 
 
-def create_nnmodel(n_param,image_size):
-    num_channels=96 #128,192
-    num_res_blocks=3 #2,3
+def create_nnmodel(n_param,image_size,num_channels=96,num_res_blocks=3):
+    #num_channels= #128,192
+    #num_res_blocks=3 #2,3
     channel_mult=""
     use_checkpoint=False
     attention_resolutions="16,8"
