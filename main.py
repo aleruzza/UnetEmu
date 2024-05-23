@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from params import params
-from loader import TextImageDataset, PretrainDataset, scaleandlog, getlabels
+from loader import TextImageDataset, PretrainDataset, scaleandlog, getlabels, get_testset
 from create_model import create_nnmodel
     
     
@@ -41,30 +41,8 @@ def train(params, model):
         pin_memory=True
     )
 
-    #loading test set
-    test_paradf = pd.read_csv(f'{params["datadir"]}/testpara.csv', index_col=0)
-    slopes = np.array(test_paradf[['SigmaSlope']])
-    #generating initial conditions
-    x = np.linspace(-3, 3, 128)
-    y = np.linspace(-3, 3, 128)
-    xx, yy = np.meshgrid(x, y)
-    r = np.sqrt(xx**2+yy**2)
-    ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
-    #standardizing
-    #means = ict.reshape(ict.shape[0], -1).mean(axis=1).reshape(-1,1,1)
-    #stds = ict.reshape(ict.shape[0], -1).std(axis=1).reshape(-1,1,1)
-    ict = np.expand_dims(scaleandlog(ict,1), axis=1)
-    ict = torch.tensor(ict).to(device=params['device'])
-    testparam = torch.tensor(np.float32(getlabels(test_paradf)))
-    testparam =  testparam.to(params['device'])
-    xtest = torch.tensor(np.expand_dims(scaleandlog(np.load(f'{params["datadir"]}/datatest.npy'),1e-5), axis=1)).to(params['device'])
-
-    #logging test images
-    images = []
-    for i in range(params['n_test_log_images']):
-        image = wandb.Image(xtest[i].to('cpu'), mode='F')
-        images.append(image)
-    wandb.log({"testset_simulations": images})
+        
+    ict, testparam, xtest = get_testset()
             
     #training loop
     params_to_optimize = [
