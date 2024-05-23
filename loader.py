@@ -210,6 +210,8 @@ class TextImageDataset(Dataset):
         original_image = np.float32(self.data[ind])
         if not self.mdeco:
             arr = scaleandlog(np.expand_dims(original_image,axis=0), 1e-5)
+        else:
+            arr = scaleandlog(original_image, 1e-5)
         arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)
