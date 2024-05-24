@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from params import params
-from loader import TextImageDataset, PretrainDataset, scaleandlog, getlabels, get_testset
+from loader import TextImageDataset, PretrainDataset, get_testset
 from create_model import create_nnmodel
 
 
