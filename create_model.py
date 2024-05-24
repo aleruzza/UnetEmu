@@ -97,6 +97,7 @@ class Para2ImUNet(UNetModel):
             #emb = emb + text_outputs.to(emb)
 
         h = x.type(self.dtype)
+        print(h.shape)
         for module in self.input_blocks:
             h = module(h, emb)
             print(h.shape)
@@ -108,4 +109,5 @@ class Para2ImUNet(UNetModel):
             h = module(h, emb)
         h = h.type(x.dtype)
         h = self.out(h)
+        print(h.shape)
         return h 
