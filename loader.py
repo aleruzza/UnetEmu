@@ -30,7 +30,7 @@ def get_image_files_narray(base_path):
 def getlabels(dataframe):
     dataframe[['PlanetMass', 'Alpha', 'InvStokes1']] = np.log10(dataframe[['PlanetMass', 'Alpha', 'InvStokes1']])
     labels = np.array(dataframe[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']])
-    return labels
+    return np.float32(labels)
 
 def get_labels_narray(base_path):
     paradf = pd.read_csv(f'{base_path}/run4.csv', index_col=0)
@@ -57,28 +57,38 @@ def get_pretraining_data(base_path, n=10):
     np.random.shuffle(dataset)
     return dataset[0:n]
 
+def generate_ict_mdeco(slopes):
+    r = np.logspace(np.log10(0.3), np.log10(3), 128)
+    t = np.linspace(0, 2*np.pi, 512)
+    
+    _, rr = np.meshgrid(t, r)
+    ict = np.float32(rr**(-slopes.reshape(-1,1,1)))
+    
+    ft = np.fft.rfft(ict, axis=1)
+    #remove the last k to make the input data divisible by 2 multiple times -> (1000x256x128)
+    ft = ft[:,:-1,:]
+    #put imag and real parts in different channels
+    real = np.expand_dims(ft.real, axis=1)
+    imag = np.expand_dims(ft.imag, axis=1)
+    ict = np.concatenate([real, imag], axis=1)
+    ict =scaleandlog(np.float32(ict),1)
+    return ict
+        
 def generate_ict(slopes, mdeco, device):
-     #generating initial conditions
-    x = np.linspace(-3, 3, 128)
-    y = np.linspace(-3, 3, 128)
-    xx, yy = np.meshgrid(x, y)
-    r = np.sqrt(xx**2+yy**2)
-    ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
     
     if mdeco:
-        ft = np.fft.rfft(ict, axis=1)
-        #remove the last k to make the input data divisible by 2 multiple times -> (1000x256x128)
-        ft = ft[:,:-1,:]
-        #put imag and real parts in different channels
-        real = np.expand_dims(ft.real, axis=1)
-        imag = np.expand_dims(ft.imag, axis=1)
-        ict = np.concatenate([real, imag], axis=1)
+        return generate_ict_mdeco(slopes=slopes)
+    else:
+        #generating initial conditions
+        x = np.linspace(-3, 3, 128)
+        y = np.linspace(-3, 3, 128)
+        xx, yy = np.meshgrid(x, y)
+        r = np.sqrt(xx**2+yy**2)
+        ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
         
-    ict =scaleandlog(np.float32(ict),1)
-    if not mdeco:
+        ict =scaleandlog(np.float32(ict),1)
         ict = np.expand_dims(ict, axis=1)
-    
-    return ict
+        return ict
 
 #################################################################################
 
