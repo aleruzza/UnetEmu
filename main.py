@@ -125,7 +125,7 @@ def train(params, model):
                 if ep==0:
                     images = []
                     for i in range(params['n_test_log_images']):
-                        image = wandb.Image(im_test[i], mode='F')
+                        image = wandb.Image(torch.tensor(np.float32(im_test[i])), mode='F')
                         images.append(image)
                     wandb.log({"testset_simulations": images})
         
