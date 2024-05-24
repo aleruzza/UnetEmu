@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 import numpy as np
 import torchvision.transforms as T
 import torch
-import params
+from params import params
 import wandb
 
 ################### Normalization functions ###################################
