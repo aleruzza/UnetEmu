@@ -8,7 +8,7 @@ import numpy as np
 import torchvision.transforms as T
 import torch
 import wandb
-import params
+from params import params
     
 
 ############ functions that read numpy array data ##############################
