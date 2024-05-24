@@ -7,13 +7,20 @@ from torch.utils.data import Dataset
 import numpy as np
 import torchvision.transforms as T
 import torch
+import params
 import wandb
 
 ################### Normalization functions ###################################
-def scaleandlog(data, scale):
+def scaleandlog_old(data, scale):
     data = np.nan_to_num(data)
     return np.log10(1 + data/scale)
 
+def nonorm(data, scale):
+    return data/scale
+
+def scaleandlog(data, scale):
+    return params['norm'](data, scale)
+    
 
 ############ functions that read numpy array data ##############################
 
