@@ -8,17 +8,7 @@ import numpy as np
 import torchvision.transforms as T
 import torch
 import wandb
-
-################### Normalization functions ###################################
-def scaleandlog_old(data, scale):
-    data = np.nan_to_num(data)
-    return np.log10(1 + data/scale)
-
-def nonorm(data, scale):
-    return data/scale
-
-def scaleandlog(data, scale):
-    return nonorm(data, scale)
+import params
     
 
 ############ functions that read numpy array data ##############################
@@ -27,28 +17,14 @@ def get_image_files_narray(base_path):
     image_files = np.load(f'{base_path}/data.npy')
     return image_files
 
-def getlabels(dataframe):
-    dataframe[['PlanetMass', 'Alpha', 'InvStokes1']] = np.log10(dataframe[['PlanetMass', 'Alpha', 'InvStokes1']])
-    labels = np.array(dataframe[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']])
-    return np.float32(labels)
 
-def get_labels_narray(base_path):
-    paradf = pd.read_csv(f'{base_path}/run4.csv', index_col=0)
-    labels = getlabels(paradf)
-    
+def getlabels_narray(base_path):
+    dataframe = pd.read_csv(f'{base_path}', index_col=0)
+    #dataframe[['PlanetMass', 'Alpha', 'InvStokes1']] = np.log10(dataframe[['PlanetMass', 'Alpha', 'InvStokes1']])
+    labels = np.log10(np.array(dataframe[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']]))
     #initial conditions
-    slopes = np.array(paradf['SigmaSlope'])
-    x = np.linspace(-3, 3, 128)
-    y = np.linspace(-3, 3, 128)
-    xx, yy = np.meshgrid(x, y)
-    r = np.sqrt(xx**2+yy**2)
-    
-    #standardizing
-    #means = ic_inputs.reshape(ic_inputs.shape[0], -1).mean(axis=1).reshape(-1,1,1)
-    #stds = ic_inputs.reshape(ic_inputs.shape[0], -1).std(axis=1).reshape(-1,1,1)
-    #ic_inputs = (ic_inputs-means)/stds
-    
-    return labels, slopes
+    slopes = np.array(dataframe['SigmaSlope'])
+    return np.float32(labels), slopes
 
 
 def get_pretraining_data(base_path, n=10):
@@ -57,13 +33,12 @@ def get_pretraining_data(base_path, n=10):
     np.random.shuffle(dataset)
     return dataset[0:n]
 
+
 def generate_ict_mdeco(slopes):
     r = np.logspace(np.log10(0.3), np.log10(3), 128)
     t = np.linspace(0, 2*np.pi, 512)
-    
     rr, _ = np.meshgrid(r, t)
     ict = np.float32(rr**(-slopes.reshape(-1,1,1)))
-    
     ft = np.fft.rfft(ict, axis=1)
     #remove the last k to make the input data divisible by 2 multiple times -> (1000x256x128)
     ft = ft[:,:-1,:]
@@ -71,11 +46,11 @@ def generate_ict_mdeco(slopes):
     real = np.expand_dims(ft.real, axis=1)
     imag = np.expand_dims(ft.imag, axis=1)
     ict = np.concatenate([real, imag], axis=1)
-    ict =scaleandlog(np.float32(ict),1)
+    ict = params['norm'](np.float32(ict),1)
     return ict
         
-def generate_ict(slopes, mdeco, device):
-    
+        
+def generate_ict(slopes, mdeco):
     if mdeco:
         return generate_ict_mdeco(slopes=slopes)
     else:
@@ -86,7 +61,7 @@ def generate_ict(slopes, mdeco, device):
         r = np.sqrt(xx**2+yy**2)
         ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
         
-        ict =scaleandlog(np.float32(ict),1)
+        ict = params['norm'](np.float32(ict),1)
         ict = np.expand_dims(ict, axis=1)
         return ict
 
@@ -97,15 +72,12 @@ def generate_ict(slopes, mdeco, device):
 def get_testset(params):
     test_paradf = pd.read_csv(f'{params["datadir"]}/testpara.csv', index_col=0)
     slopes = np.array(test_paradf[['SigmaSlope']])
+    ict = generate_ict(slopes, mdeco=params['mdeco'])
     
-    ict = generate_ict(slopes, mdeco=params['mdeco'], device=params['device'])
-    
-    #standardizing
-    #means = ict.reshape(ict.shape[0], -1).mean(axis=1).reshape(-1,1,1)
-    #stds = ict.reshape(ict.shape[0], -1).std(axis=1).reshape(-1,1,1)
-    testparam = torch.tensor(np.float32(getlabels(test_paradf)))
+    lab, slopes = getlabels_narray
+    testparam = torch.tensor(lab)
     testparam =  testparam.to(params['device'])
-    xtest = scaleandlog(np.load(f'{params["datadir"]}/datatest.npy'),1e-5)
+    xtest = params['norm'](np.load(f'{params["datadir"]}/datatest.npy'),1e-5)
     if not params['mdeco']:
         xtest = np.expand_dims(xtest, axis=1)
     xtest = torch.tensor(xtest).to(params['device'])
@@ -197,7 +169,7 @@ class TextImageDataset(Dataset):
         super().__init__()
         folder = Path(folder)
         self.data = get_image_files_narray(folder)
-        self.labels, self.slopes = get_labels_narray(folder)
+        self.labels, self.slopes = get_labels_narray(f"{folder}/run4.csv")
         self.ics = generate_ict(self.slopes, mdeco=mdeco, device=device )
         self.rotaugm = rotaugm
         self.shuffle = shuffle
@@ -228,9 +200,9 @@ class TextImageDataset(Dataset):
     def __getitem__(self, ind):
         original_image = np.float32(self.data[ind])
         if not self.mdeco:
-            arr = scaleandlog(np.expand_dims(original_image,axis=0), 1e-5)
+            arr = params['norm'](np.expand_dims(original_image,axis=0), 1e-5)
         else:
-            arr = scaleandlog(original_image, 1e-5)
+            arr = params['norm'](original_image, 1e-5)
         arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)

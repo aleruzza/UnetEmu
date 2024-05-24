@@ -1,5 +1,13 @@
-from loader import nonorm
+import numpy as np
 name = 'mmodes'
+################### Normalization functions ###################################
+def scaleandlog_old(data, scale):
+    data = np.nan_to_num(data)
+    return np.log10(1 + data/scale)
+
+def nonorm(data, scale):
+    return data/scale
+######################################################################
 params = {
     'name': name,  
     'device': 'cuda', 
@@ -28,3 +36,4 @@ params = {
     'n_param' : 5,
     'n_pretrain': 10000 #note: it must be <101,000
 }
+

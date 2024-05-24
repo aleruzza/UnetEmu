@@ -8,16 +8,21 @@ import numpy as np
 from params import params
 from loader import TextImageDataset, PretrainDataset, scaleandlog, getlabels, get_testset
 from create_model import create_nnmodel
-    
+
+
 def image_from_mdeco(mdeco):
-    #mdeco = 1e-5*(10**mdeco-1)
+    '''
+        Go from the m-modes decomposition of a disc image back to the disc
+        I/O shapes: (N, 2, X/2, Y) -> (N, 1, X, Y) 
+    '''
+    mdeco = mdeco*1e-5
     fft = mdeco[:,0,:,:]+1j*mdeco[:,1,:,:]
     fft = np.pad(fft, pad_width=((0,0),(0,1),(0,0)))
     images = np.fft.irfft(fft, axis=1)
     return images
     
-def train(params, model):
     
+def train(params, model):
     # initialize the dataset
     #if pretrain load the pretraining dataset
     if params['pretrain']:
@@ -49,7 +54,7 @@ def train(params, model):
         pin_memory=True,
     )
 
-        
+    #get test set
     ict, testparam, xtest = get_testset(params)
             
     #training loop
@@ -63,8 +68,6 @@ def train(params, model):
     
     #define the loss function
     loss_mse = nn.MSELoss()
-    
-    length = len(dataloader)
     
     #initialize optimizer
     optim = torch.optim.Adam(params_to_optimize, lr=params['lr'])
@@ -118,12 +121,12 @@ def train(params, model):
                     images.append(image)
                 wandb.log({"testset_emulations": images})
         
+        
 def getmse(im1, im2):
     #xx, yy = np.meshgrid(x,y)
     #rr = np.sqrt(xx**2+yy**2)
     #return (((im1-im2)**2)*((rr<3) & (rr>0.3))).mean()
     return ((im1-im2)**2).mean()
-    
     
 
 if __name__ == "__main__":
