@@ -103,7 +103,7 @@ def train(params, model):
             model.eval()
             x_pred_t = model(ict, testparam)
             xy = np.linspace(-3,3,128)
-            mse_test = getmse(x_pred_t, xtest, xy, xy)
+            mse_test = getmse(x_pred_t, xtest)
             wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
             
             if params['mdeco']:
