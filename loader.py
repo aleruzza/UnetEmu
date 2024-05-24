@@ -167,7 +167,7 @@ class TextImageDataset(Dataset):
         folder = Path(folder)
         self.data = get_image_files_narray(folder)
         self.labels, self.slopes = get_labels_narray(f"{folder}/run4.csv")
-        self.ics = generate_ict(self.slopes, mdeco=mdeco, device=device )
+        self.ics = generate_ict(self.slopes, mdeco=mdeco )
         self.rotaugm = rotaugm
         self.shuffle = shuffle
         self.prefix = folder
