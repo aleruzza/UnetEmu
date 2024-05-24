@@ -99,10 +99,12 @@ class Para2ImUNet(UNetModel):
         h = x.type(self.dtype)
         for module in self.input_blocks:
             h = module(h, emb)
+            print(h.shape)
             hs.append(h)
         h = self.middle_block(h, emb)
         for module in self.output_blocks:
             h = th.cat([h, hs.pop()], dim=1)
+            print(h.shape)
             h = module(h, emb)
         h = h.type(x.dtype)
         h = self.out(h)
