@@ -107,7 +107,7 @@ def train(params, model):
             wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
             
             if params['mdeco']:
-                mse_test_image = getmse(image_from_mdeco(x_pred_t.cpu()), image_from_mdeco(xtest))
+                mse_test_image = getmse(image_from_mdeco(x_pred_t.cpu()), image_from_mdeco(xtest.cpu()))
                 wandb.log({'mse_test_image':mse_test_image})
             
             #log some test images
