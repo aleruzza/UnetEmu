@@ -118,7 +118,7 @@ def train(params, model):
                     images.append(image)
                 wandb.log({"testset_emulations": images})
         
-def getmse(im1, im2, x, y):
+def getmse(im1, im2):
     #xx, yy = np.meshgrid(x,y)
     #rr = np.sqrt(xx**2+yy**2)
     #return (((im1-im2)**2)*((rr<3) & (rr>0.3))).mean()
