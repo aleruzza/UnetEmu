@@ -1,3 +1,4 @@
+from loader import *
 name = 'mmodes'
 params = {
     'name': name,  
@@ -18,6 +19,7 @@ params = {
     'rotaugm': False,
     'image_size': 128,
     'logima_freq': 20,
+    'norm': nonorm,
     'n_test_log_images': 10,
     'num_channels': 96,
     'channel_mult': "1, 1, 2, 3, 4",
