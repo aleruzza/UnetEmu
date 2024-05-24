@@ -61,7 +61,7 @@ def generate_ict_mdeco(slopes):
     r = np.logspace(np.log10(0.3), np.log10(3), 128)
     t = np.linspace(0, 2*np.pi, 512)
     
-    _, rr = np.meshgrid(t, r)
+    rr, _ = np.meshgrid(r, t)
     ict = np.float32(rr**(-slopes.reshape(-1,1,1)))
     
     ft = np.fft.rfft(ict, axis=1)
