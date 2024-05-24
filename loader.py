@@ -46,7 +46,7 @@ def generate_ict_mdeco(slopes):
     real = np.expand_dims(ft.real, axis=1)
     imag = np.expand_dims(ft.imag, axis=1)
     ict = np.concatenate([real, imag], axis=1)
-    ict = params['norm'](np.float32(ict),1)
+    ict = params['norm'](np.float32(ict),1e-5)
     return ict
         
         
@@ -73,7 +73,7 @@ def get_testset(params):
     lab, slopes = get_labels_narray(f'{params["datadir"]}/testpara.csv')
     ict = generate_ict(slopes, mdeco=params['mdeco'])
     testparam = torch.tensor(lab).to(params['device'])
-    xtest = params['norm'](np.load(f'{params["datadir"]}/datatest.npy'),1)
+    xtest = params['norm'](np.load(f'{params["datadir"]}/datatest.npy'),1e-5)
     if not params['mdeco']:
         xtest = np.expand_dims(xtest, axis=1)
     xtest = torch.tensor(xtest).to(params['device'])
@@ -197,9 +197,9 @@ class TextImageDataset(Dataset):
     def __getitem__(self, ind):
         original_image = np.float32(self.data[ind])
         if not self.mdeco:
-            arr = params['norm'](np.expand_dims(original_image,axis=0), 1)
+            arr = params['norm'](np.expand_dims(original_image,axis=0), 1e-5)
         else:
-            arr = params['norm'](original_image, 1)
+            arr = params['norm'](original_image, 1e-5)
         arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)
