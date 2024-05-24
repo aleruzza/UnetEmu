@@ -74,7 +74,7 @@ def generate_ict(slopes, mdeco, device):
         imag = np.expand_dims(ft.imag, axis=1)
         ict = np.concatenate([real, imag], axis=1)
         
-    ict =scaleandlog(ict,1)
+    ict =scaleandlog(np.float32(ict),1)
     if not mdeco:
         ict = np.expand_dims(ict, axis=1)
     

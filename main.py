@@ -10,7 +10,7 @@ from loader import TextImageDataset, PretrainDataset, scaleandlog, getlabels, ge
 from create_model import create_nnmodel
     
 def image_from_mdeco(mdeco):
-    mdeco = 1e-5*(10**mdeco-1)
+    #mdeco = 1e-5*(10**mdeco-1)
     fft = mdeco[:,0,:,:]+1j*mdeco[:,1,:,:]
     fft = np.pad(fft, pad_width=((0,0),(0,1),(0,0)))
     images = np.fft.irfft(fft, axis=1)
