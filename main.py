@@ -119,13 +119,13 @@ def train(params, model):
             if ep%params['logima_freq']==0:
                 images = []
                 for i in range(params['n_test_log_images']):
-                    image = wandb.Image(im_pred[i].to('cpu'), mode='F')
+                    image = wandb.Image(im_pred[i], mode='F')
                     images.append(image)
                 wandb.log({"testset_emulations": images})
             if ep==0:
                 images = []
                 for i in range(params['n_test_log_images']):
-                    image = wandb.Image(im_test[i].to('cpu'), mode='F')
+                    image = wandb.Image(im_test[i], mode='F')
                     images.append(image)
                 wandb.log({"testset_simulations": images})
         
