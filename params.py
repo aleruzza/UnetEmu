@@ -1,4 +1,4 @@
-from loader import *
+from loader import nonorm
 name = 'mmodes'
 params = {
     'name': name,  
