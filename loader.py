@@ -18,7 +18,7 @@ def get_image_files_narray(base_path):
     return image_files
 
 
-def getlabels_narray(base_path):
+def get_labels_narray(base_path):
     dataframe = pd.read_csv(f'{base_path}', index_col=0)
     #dataframe[['PlanetMass', 'Alpha', 'InvStokes1']] = np.log10(dataframe[['PlanetMass', 'Alpha', 'InvStokes1']])
     labels = np.log10(np.array(dataframe[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']]))
@@ -69,26 +69,23 @@ def generate_ict(slopes, mdeco):
 
 #######################Test set##################################################
 
-def get_testset(params):
-    test_paradf = pd.read_csv(f'{params["datadir"]}/testpara.csv', index_col=0)
-    slopes = np.array(test_paradf[['SigmaSlope']])
+def get_testset(params):    
+    lab, slopes = get_labels_narray(f'{params["datadir"]}/testpara.csv')
     ict = generate_ict(slopes, mdeco=params['mdeco'])
-    
-    lab, slopes = getlabels_narray
-    testparam = torch.tensor(lab)
-    testparam =  testparam.to(params['device'])
+    testparam = torch.tensor(lab).to(params['device'])
     xtest = params['norm'](np.load(f'{params["datadir"]}/datatest.npy'),1e-5)
     if not params['mdeco']:
         xtest = np.expand_dims(xtest, axis=1)
     xtest = torch.tensor(xtest).to(params['device'])
 
     #logging test images
+    '''
     images = []
     for i in range(params['n_test_log_images']):
         image = wandb.Image(xtest[i].to('cpu'), mode='F')
         images.append(image)
     wandb.log({"testset_simulations": images})
-    
+    '''
     ict = torch.tensor(ict).to(device=params['device'])
     
     return ict, testparam, xtest
