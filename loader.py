@@ -18,7 +18,7 @@ def nonorm(data, scale):
     return data/scale
 
 def scaleandlog(data, scale):
-    return params['norm'](data, scale)
+    return nonorm(data, scale)
     
 
 ############ functions that read numpy array data ##############################
