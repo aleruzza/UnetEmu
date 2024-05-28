@@ -139,7 +139,7 @@ def getmse(im1, im2):
     #xx, yy = np.meshgrid(x,y)
     #rr = np.sqrt(xx**2+yy**2)
     #return (((im1-im2)**2)*((rr<3) & (rr>0.3))).mean()
-    return ((im1-im2)**2).mean()
+    return ((im1-im2)**2).mean().to('cpu')
     
 
 if __name__ == "__main__":
