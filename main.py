@@ -67,13 +67,13 @@ def train(params, model):
     print(f"Number of parameters for unet: {number_of_params}")
     
     #define the loss function
-    loss_mse = nn.MSELoss()
+    loss = params['loss']
     
     #initialize optimizer
     optim = torch.optim.Adam(params_to_optimize, lr=params['lr'])
 
     #loop
-    wandb.watch(model, criterion=loss_mse, log_freq=10)
+    wandb.watch(model, criterion=loss, log_freq=10)
     for ep in range(params['nepochs']):
         print(f'epoch {ep}')
         model.train() #setting model in training mode
@@ -83,6 +83,7 @@ def train(params, model):
             optim.param_groups[0]['lr'] = params['lr']*(1-ep/params['nepochs'])
             
         pbar = tqdm(dataloader)
+        mean_loss = np.array([])
         mean_mse = np.array([])
         for i, (x, p, ic) in enumerate(pbar):
             model.train()
@@ -92,10 +93,12 @@ def train(params, model):
             ic = ic.to(params['device'])
             x_pred = model(ic, p)
             
-            loss = loss_mse(x, x_pred).to(device=params['device'])
+            loss = loss(x, x_pred).to(device=params['device'])
             loss.backward()
-            mean_mse = np.append(mean_mse, [loss.item()])
+            mean_loss = np.append(mean_loss, [loss.item()])
+            mean_mse = np.append(mean_mse, [getmse(x, x_pred)])
             pbar.set_description(f'loss: {loss.item():.4f}')
+            wandb.log({'mse_train': mean_mse, 'epoch': ep})
             optim.step()
             
         if params['save_model']:
@@ -107,9 +110,11 @@ def train(params, model):
             x_pred_t = model(ict, testparam)
             xy = np.linspace(-3,3,128)
             mse_test = getmse(x_pred_t, xtest)
-            wandb.log({'loss': mean_mse.mean(), 'epoch': ep, 'mse_test': mse_test})
+            wandb.log({'loss': mean_loss.mean(), 'epoch': ep, 'mse_test': mse_test})
             
-            if params['mdeco']:
+            
+            
+            if params['mode']=='mdeco':
                 im_pred = image_from_mdeco(x_pred_t.cpu())
                 im_test = image_from_mdeco(xtest.cpu())
                 mse_test_image = getmse(im_pred, im_test)

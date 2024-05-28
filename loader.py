@@ -34,6 +34,17 @@ def get_pretraining_data(base_path, n=10):
     return dataset[0:n]
 
 
+def generate_ict(slopes, mode):
+    if mode=='mdeco':
+        return generate_ict_mdeco(slopes=slopes)
+    elif mode=='128x128_disc':
+        return generate_ict_128x128_disc(slopes=slopes)
+    elif mode=='cyl':
+        return generate_ict_cyl(slopes=slopes)
+    
+    
+########### mdeco ##################
+
 def generate_ict_mdeco(slopes):
     r = np.logspace(np.log10(0.3), np.log10(3), 128)
     t = np.linspace(0, 2*np.pi, 512)
@@ -48,22 +59,27 @@ def generate_ict_mdeco(slopes):
     ict = np.concatenate([real, imag], axis=1)
     ict = params['norm'](np.float32(ict),1e-5)
     return ict
+
+def generate_ict_128x128_disc(slopes):
+    #generating initial conditions
+    x = np.linspace(-3, 3, 128)
+    y = np.linspace(-3, 3, 128)
+    xx, yy = np.meshgrid(x, y)
+    r = np.sqrt(xx**2+yy**2)
+    ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
+    
+    ict = params['norm'](np.float32(ict),1)
+    ict = np.expand_dims(ict, axis=1)
+    return ict
+
+def generate_ict_cyl(slopes, nr=128, ntheta=512):
+    r = np.logspace(np.log10(0.3), np.log10(3), nr)
+    t = np.linspace(0, 2*np.pi, ntheta)
+    rr, _ = np.meshgrid(r, t)
+    ict = np.float32(1e-5*rr**(-slopes.reshape(-1,1,1)))
+    return ict
         
         
-def generate_ict(slopes, mdeco):
-    if mdeco:
-        return generate_ict_mdeco(slopes=slopes)
-    else:
-        #generating initial conditions
-        x = np.linspace(-3, 3, 128)
-        y = np.linspace(-3, 3, 128)
-        xx, yy = np.meshgrid(x, y)
-        r = np.sqrt(xx**2+yy**2)
-        ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
-        
-        ict = params['norm'](np.float32(ict),1)
-        ict = np.expand_dims(ict, axis=1)
-        return ict
 
 #################################################################################
 

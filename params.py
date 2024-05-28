@@ -1,12 +1,14 @@
 import numpy as np
+import losses
 name = 'mmodes'
 ################### Normalization functions ###################################
-def scaleandlog_old(data, scale):
+def scaleandlog(data, scale):
     data = np.nan_to_num(data)
     return np.log10(1 + data/scale)
 
 def nonorm(data, scale):
     return data/scale
+
 ######################################################################
 params = {
     'name': name,  
@@ -16,7 +18,7 @@ params = {
     'save_model': True,
     'savedir': f'./outputs/{name}',
     'datadir': f'./mmodes_data/',
-    'mdeco': True,
+    'mode': 'mdeco',
     'Override': True,
     'savefreq': 20,
     'cond': True,
@@ -27,6 +29,7 @@ params = {
     'rotaugm': False,
     'image_size': 128,
     'logima_freq': 20,
+    'loss': losses.MSEandFFT(),
     'norm': nonorm,
     'n_test_log_images': 10,
     'num_channels': 96,
