@@ -122,7 +122,8 @@ def train(params, model):
                 im_test = xtest.cpu()
                 
             mse_test_image = getmse(im_pred, im_test)
-            wandb.log({'mse_test_image':mse_test_image})
+            l1_test_image = getl1(im_pred, im_test)
+            wandb.log({'mse_test_image':mse_test_image, 'l1_test_image':l1_test_image, 'epoch':ep})
                 
             #log some test images
             if ep%params['logima_freq']==0:
@@ -146,6 +147,9 @@ def getmse(im1, im2):
     #rr = np.sqrt(xx**2+yy**2)
     #return (((im1-im2)**2)*((rr<3) & (rr>0.3))).mean()
     return ((im1-im2)**2).mean().to('cpu')
+
+def getl1(im1, im2):
+    return torch.abs(im1-im2).mean().to('cpu')
     
 
 if __name__ == "__main__":
