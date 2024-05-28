@@ -93,11 +93,11 @@ def train(params, model):
             ic = ic.to(params['device'])
             x_pred = model(ic, p)
             
-            loss = loss(x, x_pred).to(device=params['device'])
-            loss.backward()
-            mean_loss = np.append(mean_loss, [loss.item()])
+            lossv = loss(x, x_pred).to(device=params['device'])
+            lossv.backward()
+            mean_loss = np.append(mean_loss, [lossv.item()])
             #mean_mse = np.append(mean_mse, [getmse(x, x_pred)])
-            pbar.set_description(f'loss: {loss.item():.4f}')
+            pbar.set_description(f'loss: {lossv.item():.4f}')
             #wandb.log({'mse_train': mean_mse, 'epoch': ep})
             optim.step()
             
