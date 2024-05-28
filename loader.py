@@ -87,10 +87,10 @@ def generate_ict_cyl(slopes, nr=128, ntheta=512):
 
 def get_testset(params):    
     lab, slopes = get_labels_narray(f'{params["datadir"]}/testpara.csv')
-    ict = generate_ict(slopes, mdeco=params['mdeco'])
+    ict = generate_ict(slopes, mode=params['mode'])
     testparam = torch.tensor(lab).to(params['device'])
     xtest = params['norm'](np.load(f'{params["datadir"]}/datatest.npy'),1e-5)
-    if not params['mdeco']:
+    if not params['mode']=='mdeco':
         xtest = np.expand_dims(xtest, axis=1)
     xtest = torch.tensor(xtest).to(params['device'])
 
@@ -176,7 +176,7 @@ class TextImageDataset(Dataset):
         image_size=64,
         shuffle=False,
         rotaugm=False, 
-        mdeco=False,
+        mode='cyl',
         device='cpu'
     ):
         super().__init__()
@@ -187,7 +187,7 @@ class TextImageDataset(Dataset):
         self.rotaugm = rotaugm
         self.shuffle = shuffle
         self.prefix = folder
-        self.mdeco = mdeco
+        self.mode = mode
         self.image_size = image_size
         
         if rotaugm:
@@ -212,7 +212,7 @@ class TextImageDataset(Dataset):
 
     def __getitem__(self, ind):
         original_image = np.float32(self.data[ind])
-        if not self.mdeco:
+        if self.mode!='mdeco':
             arr = params['norm'](np.expand_dims(original_image,axis=0), 1e-5)
         else:
             arr = params['norm'](original_image, 1e-5)

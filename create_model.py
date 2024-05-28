@@ -8,7 +8,7 @@ from nn import timestep_embedding
 from unet import UNetModel
 
 
-def create_nnmodel(n_param,image_size,num_channels=96,num_res_blocks=3, channel_mult="", mdeco=False):
+def create_nnmodel(n_param,image_size,num_channels=96,num_res_blocks=3, channel_mult="", mode='cyl'):
     #num_channels= #128,192
     #num_res_blocks=3 #2,3
     #channel_mult=""
@@ -41,7 +41,7 @@ def create_nnmodel(n_param,image_size,num_channels=96,num_res_blocks=3, channel_
     for res in attention_resolutions.split(","):
         attention_ds.append(image_size // int(res))
         
-    i_ch = 2 if mdeco else 1
+    i_ch = 2 if mode=='mdeco' else 1
     return Para2ImUNet(n_param=n_param,
         in_channels=i_ch,
         model_channels=num_channels,
