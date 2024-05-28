@@ -96,9 +96,9 @@ def train(params, model):
             loss = loss(x, x_pred).to(device=params['device'])
             loss.backward()
             mean_loss = np.append(mean_loss, [loss.item()])
-            mean_mse = np.append(mean_mse, [getmse(x, x_pred)])
+            #mean_mse = np.append(mean_mse, [getmse(x, x_pred)])
             pbar.set_description(f'loss: {loss.item():.4f}')
-            wandb.log({'mse_train': mean_mse, 'epoch': ep})
+            #wandb.log({'mse_train': mean_mse, 'epoch': ep})
             optim.step()
             
         if params['save_model']:
