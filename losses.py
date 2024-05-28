@@ -17,5 +17,3 @@ class MSEandFFT(nn.Module):
         fftaw = self.c_kea*torch.exp(-self.gamma_kea*torch.range(0, tar_fft.shape[2]-1))
         fft = (((in_fft-tar_fft)**2).mean(axis=-1)*fftaw).mean()
         return mse*self.wfft + fft*self.wfft
-
-mdeco
