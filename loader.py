@@ -70,7 +70,7 @@ def generate_ict_128x128_disc(slopes):
     
     ict = params['norm'](np.float32(ict),1)
     ict = np.expand_dims(ict, axis=1)
-    print(ict.shape)
+    
     return ict
 
 def generate_ict_cyl(slopes, nr=128, ntheta=512):
@@ -220,6 +220,6 @@ class TextImageDataset(Dataset):
         arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)
-        print(arr.shape)
+            
         return arr, th.tensor(np.float32(self.labels[ind])), th.tensor(self.ics[ind])
     
