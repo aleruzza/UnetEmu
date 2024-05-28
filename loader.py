@@ -214,11 +214,12 @@ class TextImageDataset(Dataset):
     def __getitem__(self, ind):
         original_image = np.float32(self.data[ind])
         if self.mode!='mdeco':
-            arr = params['norm'](np.expand_dims(original_image,axis=0), 1e-5)
+            arr = params['norm'](np.expand_dims(original_image, axis=0), 1e-5)
         else:
             arr = params['norm'](np.expand_dims(original_image, axis=0), 1e-5)
         arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)
+        print(arr.shape)
         return arr, th.tensor(np.float32(self.labels[ind])), th.tensor(self.ics[ind])
     

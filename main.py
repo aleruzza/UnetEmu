@@ -92,6 +92,8 @@ def train(params, model):
             p = p.to(params['device'])
             ic = ic.to(params['device'])
             x_pred = model(ic, p)
+            print(x_pred.shape)
+            print(x.shape)
             
             lossv = loss(x, x_pred).to(device=params['device'])
             lossv.backward()
