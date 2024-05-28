@@ -77,7 +77,7 @@ def generate_ict_cyl(slopes, nr=128, ntheta=512):
     t = np.linspace(0, 2*np.pi, ntheta)
     rr, _ = np.meshgrid(r, t)
     ict = np.float32(1e-5*rr**(-slopes.reshape(-1,1,1)))
-    return ict
+    return np.expand_dims(ict, axis=1)
         
         
 
