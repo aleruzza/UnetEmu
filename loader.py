@@ -66,7 +66,7 @@ def generate_ict_128x128_disc(slopes):
     y = np.linspace(-3, 3, 128)
     xx, yy = np.meshgrid(x, y)
     r = np.sqrt(xx**2+yy**2)
-    ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.3)))
+    ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.4)))
     
     ict = params['norm'](np.float32(ict),1)
     ict = np.expand_dims(ict, axis=1)
@@ -216,7 +216,7 @@ class TextImageDataset(Dataset):
         if self.mode!='mdeco':
             arr = params['norm'](np.expand_dims(original_image,axis=0), 1e-5)
         else:
-            arr = params['norm'](original_image, 1e-5)
+            arr = params['norm'](np.expand_dims(original_image, axis=0), 1e-5)
         arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)
