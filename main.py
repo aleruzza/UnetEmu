@@ -112,27 +112,31 @@ def train(params, model):
             mse_test = getmse(x_pred_t, xtest)
             wandb.log({'loss': mean_loss.mean(), 'epoch': ep, 'mse_test': mse_test})
             
-            
-            
             if params['mode']=='mdeco':
                 im_pred = image_from_mdeco(x_pred_t.cpu())
                 im_test = image_from_mdeco(xtest.cpu())
-                mse_test_image = getmse(im_pred, im_test)
-                wandb.log({'mse_test_image':mse_test_image})
-            
-                #log some test images
-                if ep%params['logima_freq']==0:
-                    images = []
-                    for i in range(params['n_test_log_images']):
-                        image = wandb.Image(torch.tensor(np.float32(im_pred[i])), mode='F')
-                        images.append(image)
-                    wandb.log({"testset_emulations": images})
-                if ep==0:
-                    images = []
-                    for i in range(params['n_test_log_images']):
-                        image = wandb.Image(torch.tensor(np.float32(im_test[i])), mode='F')
-                        images.append(image)
-                    wandb.log({"testset_simulations": images})
+            else:
+                im_pred = x_pred_t.cpu()
+                im_test = xtest.cpu()
+                
+            mse_test_image = getmse(im_pred, im_test)
+            wandb.log({'mse_test_image':mse_test_image})
+                
+            #log some test images
+            if ep%params['logima_freq']==0:
+                images = []
+                for i in range(params['n_test_log_images']):
+                    image = wandb.Image(torch.tensor(np.float32(im_pred[i])), mode='F')
+                    images.append(image)
+                wandb.log({"testset_emulations": images})
+            if ep==0:
+                images = []
+                for i in range(params['n_test_log_images']):
+                    image = wandb.Image(torch.tensor(np.float32(im_test[i])), mode='F')
+                    images.append(image)
+                wandb.log({"testset_simulations": images})
+        
+                
         
         
 def getmse(im1, im2):
