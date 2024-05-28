@@ -92,10 +92,10 @@ def train(params, model):
             p = p.to(params['device'])
             ic = ic.to(params['device'])
             x_pred = model(ic, p)
-            print(x_pred.shape)
-            print(x.shape)
+            print(x_pred.min())
+            print(x.min())
             
-            lossv = loss(x, x_pred).to(device=params['device'])
+            lossv = loss(x_pred, x).to(device=params['device'])
             lossv.backward()
             mean_loss = np.append(mean_loss, [lossv.item()])
             #mean_mse = np.append(mean_mse, [getmse(x, x_pred)])
