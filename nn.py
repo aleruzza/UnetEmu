@@ -7,6 +7,7 @@ import math
 import torch as th
 import torch.nn as nn
 import torch.nn.functional as F
+import params
 
 
 # PyTorch 1.7 has SiLU, but we support PyTorch 1.5.
@@ -38,6 +39,14 @@ def conv_nd(dims, *args, **kwargs):
     if dims == 1:
         return nn.Conv1d(*args, **kwargs)
     elif dims == 2:
+        if params['periodic_bound_x']:
+            kwargs.update(padding=0)
+            mlist = [
+                nn.ConstantPad2d((1,1,0,0), 0),
+                nn.CircularPad2d((0,0,1,1)),
+                nn.Conv2d(*args, **kwargs),                
+            ]
+            return nn.Sequential(mlist)
         return nn.Conv2d(*args, **kwargs)
     elif dims == 3:
         return nn.Conv3d(*args, **kwargs)
@@ -123,7 +132,7 @@ def timestep_embedding(timesteps, dim, max_period=10000):
     :param max_period: controls the minimum frequency of the embeddings.
     :return: an [N x dim] Tensor of positional embeddings.
     """
-    #print (timesteps.shape)
+    #print (timesteps.shape) 
     half = dim // 2
     freqs = th.exp(
         -math.log(max_period) * th.arange(start=0, end=half, dtype=th.float32) / half
