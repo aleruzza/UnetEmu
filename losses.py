@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 
 class MSEandFFT(nn.Module):
-    def __init__(self, wmse=1, wfft=1, c_kea=1, gamma_kea=0.1, device='cuda'):
+    def __init__(self, wmse=1, wfft=1, c_kea=1, gamma_kea=0, device='cuda'):
         super(MSEandFFT, self).__init__()
         self.wmse = wmse
         self.wfft = wfft
