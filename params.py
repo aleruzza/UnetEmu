@@ -24,6 +24,7 @@ params = {
     'cond': True,
     'lr_decay': False,
     'resume': False,
+    'periodic_bound_x': True,
     'sample_freq': 10, 
     'batch_size': 32,
     'rotaugm': False,
