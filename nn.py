@@ -7,7 +7,7 @@ import math
 import torch as th
 import torch.nn as nn
 import torch.nn.functional as F
-import params
+from params import params
 
 
 # PyTorch 1.7 has SiLU, but we support PyTorch 1.5.
