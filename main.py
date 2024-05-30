@@ -184,7 +184,7 @@ if __name__ == "__main__":
         else:
             emulator = create_nnmodel(5, params['image_size'], num_channels=params['num_channels'],
                                       num_res_blocks=params['num_res_blocks'], channel_mult=params['channel_mult'],
-                                      mode=params['mode']).to(device=params['device'])
+                                      mode=params['mode']).to(device=params['device'], unc=params['unc'])
             
 
         train(params=params, model=emulator)

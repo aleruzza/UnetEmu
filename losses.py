@@ -20,3 +20,8 @@ class MSEandFFT(nn.Module):
         fft = (((in_fft-tar_fft)**2).mean(axis=-1)*fftaw).mean()
         
         return mse*self.wmse + fft*self.wfft
+    
+class MSEUnc(nn.Module):
+    def  forward(self, inputs, targets):
+        mse = (inputs-targets[:,0,:,:])**2/torch.exp(2*targets[:,1:,:]) + targets[:,1,:,:]/2
+        
