@@ -106,15 +106,15 @@ def train(params, model):
         model.eval()
         with torch.inference_mode():
             x_pred_t = model(ict, testparam)
-            mse_test = getmse(x_pred_t.detach(), xtest)
+            mse_test = getmse(x_pred_t.cpu(), xtest.cpu())
             wandb.log({'loss': mean_loss.mean(), 'epoch': ep, 'mse_test': mse_test})
             
             if params['mode']=='mdeco':
                 im_pred = image_from_mdeco(x_pred_t.cpu())
                 im_test = image_from_mdeco(xtest.cpu())
             else:
-                im_pred = x_pred_t.detach()
-                im_test = xtest.detach()
+                im_pred = x_pred_t.cpu()
+                im_test = xtest.cpu()
                 
             mse_test_image = getmse(im_pred, im_test)
             l1_test_image = getl1(im_pred, im_test)
@@ -133,6 +133,9 @@ def train(params, model):
                     image = wandb.Image(torch.tensor(np.float32(im_test[i])), mode='F')
                     images.append(image)
                 wandb.log({"testset_simulations": images})
+            
+            del x_pred_t
+            torch.cuda.empty_cache()
         
                 
         
