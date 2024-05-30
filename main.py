@@ -45,7 +45,7 @@ def train(params, model):
                 device=params['device']
             )
 
-    # data loader setup
+    # dataloader setup
     dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=params['batch_size'],
@@ -56,13 +56,11 @@ def train(params, model):
 
     #get test set
     ict, testparam, xtest = get_testset(params)
-            
-    #training loop
+    
+    # number of parameters to be trained
     params_to_optimize = [
             {'params': model.parameters()}
         ]
-    
-    # number of parameters to be trained
     number_of_params = sum(x.numel() for x in model.parameters())
     print(f"Number of parameters for unet: {number_of_params}")
     
@@ -105,8 +103,8 @@ def train(params, model):
             if ep%params['savefreq']==0:
                 torch.save(model.state_dict(), params['savedir'] + f"/model__epoch_{ep}_test_{params['name']}.pth")
         
+        model.eval()
         with torch.inference_mode():
-            model.eval()
             x_pred_t = model(ict, testparam)
             xy = np.linspace(-3,3,128)
             mse_test = getmse(x_pred_t, xtest)
