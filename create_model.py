@@ -46,7 +46,7 @@ def create_nnmodel(n_param,image_size,num_channels=96,num_res_blocks=3, channel_
     return Para2ImUNet(n_param=n_param,
         in_channels=i_ch,
         model_channels=num_channels,
-        out_channels=i_ch,
+        out_channels=o_ch,
         num_res_blocks=num_res_blocks,
         attention_resolutions=tuple(attention_ds),
         dropout=dropout,
