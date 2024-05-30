@@ -40,12 +40,15 @@ def conv_nd(dims, *args, **kwargs):
         return nn.Conv1d(*args, **kwargs)
     elif dims == 2:
         if params['periodic_bound_x']:
-            kwargs.update(padding=0)
-            return nn.Sequential(
-                nn.ConstantPad2d((1,1,0,0), 0),
-                nn.CircularPad2d((0,0,1,1)),
-                nn.Conv2d(*args, **kwargs),                
-            )
+            if kwargs['padding']==1:
+                kwargs.update(padding=0)
+                return nn.Sequential(
+                    nn.ConstantPad2d((1,1,0,0), 0),
+                    nn.CircularPad2d((0,0,1,1)),
+                    nn.Conv2d(*args, **kwargs),                
+                )
+            else:
+                return nn.Conv2d(*args, **kwargs)
         return nn.Conv2d(*args, **kwargs)
     elif dims == 3:
         return nn.Conv3d(*args, **kwargs)
