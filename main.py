@@ -161,7 +161,7 @@ if __name__ == "__main__":
             exit()
     else:
         os.mkdir(params['savedir'])
-append
+
     #checking file with parameter history and adding this run
     if os.path.exists('parahist.csv'):
         oldpara = pd.read_csv('parahist.csv', index_col=0)
