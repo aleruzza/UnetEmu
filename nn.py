@@ -41,12 +41,11 @@ def conv_nd(dims, *args, **kwargs):
     elif dims == 2:
         if params['periodic_bound_x']:
             kwargs.update(padding=0)
-            mlist = [
+            return nn.Sequential(
                 nn.ConstantPad2d((1,1,0,0), 0),
                 nn.CircularPad2d((0,0,1,1)),
                 nn.Conv2d(*args, **kwargs),                
-            ]
-            return nn.Sequential(mlist)
+            )
         return nn.Conv2d(*args, **kwargs)
     elif dims == 3:
         return nn.Conv3d(*args, **kwargs)
