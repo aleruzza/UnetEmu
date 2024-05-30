@@ -106,16 +106,15 @@ def train(params, model):
         model.eval()
         with torch.inference_mode():
             x_pred_t = model(ict, testparam)
-            xy = np.linspace(-3,3,128)
-            mse_test = getmse(x_pred_t, xtest)
+            mse_test = getmse(x_pred_t.detach(), xtest)
             wandb.log({'loss': mean_loss.mean(), 'epoch': ep, 'mse_test': mse_test})
             
             if params['mode']=='mdeco':
                 im_pred = image_from_mdeco(x_pred_t.cpu())
                 im_test = image_from_mdeco(xtest.cpu())
             else:
-                im_pred = x_pred_t.cpu()
-                im_test = xtest.cpu()
+                im_pred = x_pred_t.detach()
+                im_test = xtest.detach()
                 
             mse_test_image = getmse(im_pred, im_test)
             l1_test_image = getl1(im_pred, im_test)
