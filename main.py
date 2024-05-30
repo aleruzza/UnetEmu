@@ -84,16 +84,14 @@ def train(params, model):
             
         pbar = tqdm(dataloader)
         mean_loss = np.array([])
-        mean_mse = np.array([])
         for i, (x, p, ic) in enumerate(pbar):
             model.train()
+            model.zero_grad()
             optim.zero_grad() #reset the gradients
             x = x.to(params['device'])
             p = p.to(params['device'])
             ic = ic.to(params['device'])
             x_pred = model(ic, p)
-            #print(x_pred.min())
-            #print(x.min())
             
             lossv = loss(x_pred, x)
             lossv.backward()
@@ -163,7 +161,7 @@ if __name__ == "__main__":
             exit()
     else:
         os.mkdir(params['savedir'])
-
+append
     #checking file with parameter history and adding this run
     if os.path.exists('parahist.csv'):
         oldpara = pd.read_csv('parahist.csv', index_col=0)
