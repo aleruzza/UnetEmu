@@ -23,5 +23,6 @@ class MSEandFFT(nn.Module):
     
 class MSEUnc(nn.Module):
     def  forward(self, inputs, targets):
-        mse = (inputs-targets[:,0,:,:])**2/torch.exp(2*targets[:,1:,:]) + targets[:,1,:,:]/2
+        mse = (inputs[:,0,:,:]-targets[:,0,:,:])**2/torch.exp(2*targets[:,1:,:]) + targets[:,1,:,:]/2
+        return mse.mean()
         
