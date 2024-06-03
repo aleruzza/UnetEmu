@@ -24,7 +24,7 @@ def get_labels_narray(base_path):
     labels = np.array(dataframe[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']])
     #initial conditions
     slopes = np.array(dataframe['SigmaSlope'])
-    return params['norm_labels'](np.float32(labels)), slopes
+    return np.float32(params['norm_labels'](labels)), slopes
 
 
 def get_pretraining_data(base_path, n=10):
