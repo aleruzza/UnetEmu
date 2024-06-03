@@ -21,10 +21,10 @@ def get_image_files_narray(base_path):
 def get_labels_narray(base_path):
     dataframe = pd.read_csv(f'{base_path}', index_col=0)
     #dataframe[['PlanetMass', 'Alpha', 'InvStokes1']] = np.log10(dataframe[['PlanetMass', 'Alpha', 'InvStokes1']])
-    labels = np.log10(np.array(dataframe[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']]))
+    labels = np.array(dataframe[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']])
     #initial conditions
     slopes = np.array(dataframe['SigmaSlope'])
-    return np.float32(labels), slopes
+    return params['norm_labels'](np.float32(labels)), slopes
 
 
 def get_pretraining_data(base_path, n=10):

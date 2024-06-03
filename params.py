@@ -10,6 +10,17 @@ def scaleandlog(data, scale):
 def nonorm(data, scale):
     return data/scale
 
+def norm_labels(labels):
+    #['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']
+    max = np.array([1e-2, 0.1, 0.01, 1e3, 0.35])
+    min = np.array([1e-5, 0.03, 1e-4, 10, 0])
+    for i in [0, 2, 3]:
+        labels[:, i] = np.log10(labels[:,i])
+        max[i] = np.log10(max[i])
+        min[i] = np.log10(min[i])
+    labels = 2*(labels-min)/(max-min) - 1
+    return labels
+
 ######################################################################
 params = {
     'name': name,  
@@ -35,6 +46,7 @@ params = {
     'unc': False,
     'norm': scaleandlog,
     'scale': 1e-2,
+    'norm_labels': norm_labels,
     'n_test_log_images': 50,
     'num_channels': 96,
     'channel_mult': "1, 1, 2, 3, 4",
