@@ -1,6 +1,7 @@
 import numpy as np
 import losses
-name = 'mmodes'
+import torch
+name = 'gas'
 ################### Normalization functions ###################################
 def scaleandlog(data, scale):
     data = np.nan_to_num(data)
@@ -13,26 +14,28 @@ def nonorm(data, scale):
 params = {
     'name': name,  
     'device': 'cuda', 
-    'nepochs': 800,
+    'nepochs': 801,
     'lr': 1e-4,
     'save_model': True,
     'savedir': f'./outputs/{name}',
-    'datadir': f'./mmodes_data/',
-    'mode': 'mdeco',
+    'datadir': f'./gas_dens/',
+    'mode': '128x128_disc',
     'Override': True,
     'savefreq': 20,
     'cond': True,
     'lr_decay': False,
     'resume': False,
-    'periodic_bound_x': True,
+    'periodic_bound_x': False,
     'sample_freq': 10, 
     'batch_size': 32,
     'rotaugm': False,
     'image_size': 128,
     'logima_freq': 20,
-    'loss': losses.MSEandFFT(),
+    'loss': torch.nn.MSELoss(),
+    'unc': False,
     'norm': scaleandlog,
-    'n_test_log_images': 10,
+    'scale': 1e-2,
+    'n_test_log_images': 50,
     'num_channels': 96,
     'channel_mult': "1, 1, 2, 3, 4",
     'num_res_blocks': 3,

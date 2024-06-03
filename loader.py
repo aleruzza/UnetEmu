@@ -49,7 +49,7 @@ def generate_ict_mdeco(slopes):
     r = np.logspace(np.log10(0.3), np.log10(3), 128)
     t = np.linspace(0, 2*np.pi, 512)
     rr, _ = np.meshgrid(r, t)
-    ict = np.float32(1e-5*rr**(-slopes.reshape(-1,1,1)))
+    ict = np.float32(params['scale']*rr**(-slopes.reshape(-1,1,1)))
     ft = np.fft.rfft(ict, axis=1)
     #remove the last k to make the input data divisible by 2 multiple times -> (1000x256x128)
     ft = ft[:,:-1,:]
@@ -68,7 +68,7 @@ def generate_ict_128x128_disc(slopes):
     r = np.sqrt(xx**2+yy**2)
     ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.4)))
     
-    ict = params['norm'](np.float32(ict),1)
+    ict = params['norm'](np.float32(ict), 1)
     ict = np.expand_dims(ict, axis=1)
     
     return ict
@@ -90,30 +90,20 @@ def get_testset(params):
     lab, slopes = get_labels_narray(f'{params["datadir"]}/testpara.csv')
     ict = generate_ict(slopes, mode=params['mode'])
     testparam = torch.tensor(lab).to(params['device'])
-    xtest = params['norm'](np.load(f'{params["datadir"]}/datatest.npy'),1e-5)
+    xtest = params['norm'](np.load(f'{params["datadir"]}/datatest.npy'),params['scale'])
+    
     if not params['mode']=='mdeco':
         xtest = np.expand_dims(xtest, axis=1)
     xtest = torch.tensor(xtest).to(params['device'])
 
-    #logging test images
-    '''
-    images = []
-    for i in range(params['n_test_log_images']):
-        image = wandb.Image(xtest[i].to('cpu'), mode='F')
-        images.append(image)
-    wandb.log({"testset_simulations": images})
-    '''
     ict = torch.tensor(ict).to(device=params['device'])
     
     return ict, testparam, xtest
 
+
 ###################### Datasets #################################################
 
 class PretrainDataset(Dataset):
-    """Dataset for pretraining
-
- 
-    """
  
     def __init__(
         self,
@@ -214,9 +204,9 @@ class TextImageDataset(Dataset):
     def __getitem__(self, ind):
         original_image = np.float32(self.data[ind])
         if self.mode!='mdeco':
-            arr = params['norm'](np.expand_dims(original_image, axis=0), 1e-5)
+            arr = params['norm'](np.expand_dims(original_image, axis=0), params['scale'])
         else:
-            arr = params['norm'](np.expand_dims(original_image, axis=0), 1e-5)
+            arr = params['norm'](np.expand_dims(original_image, axis=0), params['scale'])
         arr = th.tensor(arr)
         if self.rotaugm:
             arr = self.transform(arr)
