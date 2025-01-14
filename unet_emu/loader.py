@@ -60,7 +60,7 @@ def generate_ict_mdeco(slopes):
     ict = params['norm'](np.float32(ict),1e-5)
     return ict
 
-def generate_ict_128x128_disc(slopes):
+def generate_ict_128x128_disc(slopes, nonorm=False):
     #generating initial conditions
     x = np.linspace(-3, 3, 128)
     y = np.linspace(-3, 3, 128)
@@ -68,7 +68,8 @@ def generate_ict_128x128_disc(slopes):
     r = np.sqrt(xx**2+yy**2)
     ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.4)))
     
-    ict = params['norm'](np.float32(ict), 1)
+    if not nonorm:
+        ict = params['norm'](np.float32(ict), 1)
     ict = np.expand_dims(ict, axis=1)
     return ict
 
@@ -199,7 +200,7 @@ class TextImageDataset(Dataset):
         return len(self.labels)
 
     def random_sample(self):
-        return self.__getitem__(randint(0, self.__len__() - 1))
+        return self.__getitem__(ran19:4dint(0, self.__len__() - 1))
 
     def sequential_sample(self, ind):
         if ind >= self.__len__() - 1:
