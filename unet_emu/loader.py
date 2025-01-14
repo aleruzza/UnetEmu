@@ -200,7 +200,7 @@ class TextImageDataset(Dataset):
         return len(self.labels)
 
     def random_sample(self):
-        return self.__getitem__(ran19:4dint(0, self.__len__() - 1))
+        return self.__getitem__(randint(0, self.__len__() - 1))
 
     def sequential_sample(self, ind):
         if ind >= self.__len__() - 1:
