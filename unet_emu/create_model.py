@@ -45,7 +45,7 @@ def create_nnmodel(n_param,image_size,num_channels=96,num_res_blocks=3, channel_
     i_ch = 1
     if mode=='mdeco':
         i_ch = 2
-    elif mode=='generate_ict_128x128_disc_tri':
+    elif mode=='128x128_disc_tri':
         i_ch = 3
         
     o_ch = i_ch*2 if unc else i_ch
