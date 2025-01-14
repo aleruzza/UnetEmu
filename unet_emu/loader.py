@@ -219,7 +219,7 @@ class TextImageDataset(Dataset):
             arr = params['norm'](np.expand_dims(original_image, axis=0), params['scale'])
         else:
             arr = params['norm'](np.expand_dims(original_image, axis=0), params['scale'])
-        arr = th.tensor(np.floa32(arr))
+        arr = th.tensor(np.float32(arr))
         if self.rotaugm:
             arr = self.transform(arr)
             
