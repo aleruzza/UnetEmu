@@ -1,7 +1,6 @@
 import numpy as np
 import losses
 import torch
-import pytensor.tensor as pt
 name = 'tri'
 ################### Normalization functions ###################################
 def scaleandlog(data, scale):
