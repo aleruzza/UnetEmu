@@ -12,8 +12,8 @@ def nonorm(data, scale):
 
 def norm_labels(labels):
     #['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']
-    max = np.array([1e-2, 0.1, 0.01, 0.35])
-    min = np.array([1e-5, 0.03, 1e-4, 0])
+    max = np.array([1e-2, 0.1, 0.01, 1e3, 0.35])
+    min = np.array([1e-5, 0.03, 1e-4, 10, 0])
     for i in [0, 2, 3]:
         labels[:, i] = np.log10(labels[:,i])
         max[i] = np.log10(max[i])
@@ -23,8 +23,8 @@ def norm_labels(labels):
 
 def norm_labels_gas(labels):
     #['PlanetMass', 'AspectRatio', 'Alpha',  'FlaringIndex']
-    max = np.array([1e-2, 0.1, 0.01, 1e3, 0.35])
-    min = np.array([1e-5, 0.03, 1e-4, 10, 0])
+    max = np.array([1e-2, 0.1, 0.01,  0.35])
+    min = np.array([1e-5, 0.03, 1e-4,0])
     for i in [0, 2]:
         labels[:, i] = np.log10(labels[:,i])
         max[i] = np.log10(max[i])
@@ -48,7 +48,7 @@ params = {
     'savedir': f'../outputs/{name}',
     'datadir': f'../data/gas_tri/',
     'mode': '128x128_disc_tri',
-    'Override': False,
+    'Override': True,
     'savefreq': 20,
     'cond': True,
     'lr_decay': False,
