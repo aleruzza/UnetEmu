@@ -182,7 +182,7 @@ if __name__ == "__main__":
                 #TODO: implement possibility to resume
                 exit()
         else:
-            emulator = create_nnmodel(n_param=5, image_size=params['image_size'], num_channels=params['num_channels'],
+            emulator = create_nnmodel(n_param=params['n_param'], image_size=params['image_size'], num_channels=params['num_channels'],
                                       num_res_blocks=params['num_res_blocks'], channel_mult=params['channel_mult'],
                                       mode=params['mode'], unc=params['unc']).to(device=params['device'])
             
