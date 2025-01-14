@@ -16,9 +16,9 @@ def get_image_files_narray(base_path):
     return image_files
 
 
-def get_labels_narray(base_path):
+def get_labels_narray(base_path, labels):
     dataframe = pd.read_csv(f'{base_path}', index_col=0)
-    labels = np.array(dataframe[['PlanetMass', 'AspectRatio', 'Alpha', 'InvStokes1', 'FlaringIndex']])
+    labels = np.array(dataframe[labels])
     #initial conditions
     slopes = np.array(dataframe['SigmaSlope'])
     return np.float32(params['norm_labels'](labels)), slopes
@@ -98,7 +98,7 @@ def generate_ict_cyl(slopes, nr=128, ntheta=512):
 #######################Test set##################################################
 
 def get_testset(params):    
-    lab, slopes = get_labels_narray(f'{params["datadir"]}/testpara.csv')
+    lab, slopes = get_labels_narray(f'{params["datadir"]}/testpara.csv', labels=params['infer_labels'])
     ict = generate_ict(slopes, mode=params['mode'])
     testparam = torch.tensor(lab).to(params['device'])
     xtest = params['norm'](np.load(f'{params["datadir"]}/datatest.npy'),params['scale'])
@@ -184,7 +184,7 @@ class TextImageDataset(Dataset):
         super().__init__()
         folder = Path(folder)
         self.data = get_image_files_narray(folder)
-        self.labels, self.slopes = get_labels_narray(f"{folder}/run4.csv")
+        self.labels, self.slopes = get_labels_narray(f"{folder}/run4.csv", labels=params['infer_labels'])
         self.ics = generate_ict(self.slopes, mode=mode )
         self.rotaugm = rotaugm
         self.shuffle = shuffle
