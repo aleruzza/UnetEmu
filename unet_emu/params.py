@@ -33,7 +33,7 @@ def norm_labels_gas(labels):
     return labels
 
 def norm_cube_log(data, scale):
-    scale = np.array([scale, 1, 1]).reshape(1,1,3)
+    scale = np.array([scale, 1, 1]).reshape(1,3,1,1)
     data = np.nan_to_num(data)
     return data/scale
 
