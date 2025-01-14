@@ -38,9 +38,12 @@ def generate_ict(slopes, mode):
         return generate_ict_128x128_disc(slopes=slopes)
     elif mode=='cyl':
         return generate_ict_cyl(slopes=slopes)
+    elif mode=='128x128_disc_tri':
+        return generate_ict_128x128_disc_tri(slopes=slopes)
+        
     
     
-########### mdeco ##################
+########### Initial conditions function generators ##################
 
 def generate_ict_mdeco(slopes):
     r = np.logspace(np.log10(0.3), np.log10(3), 128)
@@ -69,6 +72,17 @@ def generate_ict_128x128_disc(slopes):
     ict = np.expand_dims(ict, axis=1)
     return ict
 
+def generate_ict_128x128_disc_tri(slopes):
+    x = np.linspace(-3, 3, 128)
+    y = np.linspace(-3, 3, 128)
+    xx, yy = np.meshgrid(x, y)
+    r = np.sqrt(xx**2+yy**2)
+    vaz_ict = np.float32(r**(-0.5)*((r<3) & (r>0.4)))
+    vaz_ict = np.expand_dims(np.repeat(np.expand_dims(vaz_ict, 0), len(slopes),axis=0), -1)
+    vr_ict = np.zeros(vaz_ict.shape)
+    dens_ict = generate_ict_128x128_disc(slopes)
+    ict = np.concatenate([dens_ict, vaz_ict, vr_ict], axis=-1)
+    return params['norm'](ict, 1)
 
 def generate_ict_cyl(slopes, nr=128, ntheta=512):
     r = np.logspace(np.log10(0.3), np.log10(3), nr)

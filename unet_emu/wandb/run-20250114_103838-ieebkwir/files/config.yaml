@@ -1,0 +1,133 @@
+wandb_version: 1
+
+name:
+  desc: null
+  value: tri
+device:
+  desc: null
+  value: cuda
+nepochs:
+  desc: null
+  value: 801
+lr:
+  desc: null
+  value: 0.0001
+save_model:
+  desc: null
+  value: true
+savedir:
+  desc: null
+  value: ../outputs/tri
+datadir:
+  desc: null
+  value: ./data/gas_tri/
+mode:
+  desc: null
+  value: 128x128_disc_tri
+Override:
+  desc: null
+  value: false
+savefreq:
+  desc: null
+  value: 20
+cond:
+  desc: null
+  value: true
+lr_decay:
+  desc: null
+  value: false
+resume:
+  desc: null
+  value: false
+periodic_bound_x:
+  desc: null
+  value: false
+sample_freq:
+  desc: null
+  value: 10
+batch_size:
+  desc: null
+  value: 32
+rotaugm:
+  desc: null
+  value: false
+image_size:
+  desc: null
+  value: 128
+logima_freq:
+  desc: null
+  value: 20
+loss:
+  desc: null
+  value: MSELoss()
+unc:
+  desc: null
+  value: false
+norm:
+  desc: null
+  value: params.norm_cube_log
+scale:
+  desc: null
+  value: 0.001
+norm_labels:
+  desc: null
+  value: params.norm_labels
+n_test_log_images:
+  desc: null
+  value: 50
+num_channels:
+  desc: null
+  value: 96
+channel_mult:
+  desc: null
+  value: 1, 1, 2, 3, 4
+num_res_blocks:
+  desc: null
+  value: 3
+pretrain:
+  desc: null
+  value: false
+n_param:
+  desc: null
+  value: 4
+infer_labels:
+  desc: null
+  value:
+  - PlanetMass
+  - AspectRatio
+  - Alpha
+  - FlaringIndex
+n_pretrain:
+  desc: null
+  value: 10000
+index:
+  desc: null
+  value: 0
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.12
+    cli_version: 0.17.0
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1736847518
+    t:
+      1:
+      - 1
+      - 41
+      - 55
+      2:
+      - 1
+      - 41
+      - 55
+      3:
+      - 2
+      - 13
+      - 16
+      - 23
+      4: 3.10.12
+      5: 0.17.0
+      8:
+      - 5
+      13: linux-x86_64
