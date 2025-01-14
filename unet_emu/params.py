@@ -63,7 +63,7 @@ params = {
     'unc': False,
     'norm': norm_cube_log,
     'scale': 1e-3,
-    'norm_labels': norm_labels,
+    'norm_labels': norm_labels_gas,
     'n_test_log_images': 50,
     'num_channels': 96,
     'channel_mult': "1, 1, 2, 3, 4",
