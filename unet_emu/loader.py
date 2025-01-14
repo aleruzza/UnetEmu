@@ -83,7 +83,7 @@ def generate_ict_128x128_disc_tri(slopes):
     vr_ict = np.zeros(vaz_ict.shape)
     dens_ict = generate_ict_128x128_disc(slopes, nonorm=True)
     ict = np.concatenate([dens_ict, vaz_ict, vr_ict], axis=1)
-    return params['norm'](np.float32(ict), 1)
+    return np.float32(params['norm'](ict, 1))
 
 def generate_ict_cyl(slopes, nr=128, ntheta=512):
     r = np.logspace(np.log10(0.3), np.log10(3), nr)
