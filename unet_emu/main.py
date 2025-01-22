@@ -58,7 +58,7 @@ def train(params, model):
     #ict, testparam, xtest = get_testset(params)
     testset = TextImageDataset(
                 folder=params['datadir'],
-                labels_file='paratest.csv',
+                labels_file='testpara.csv',
                 data_file='datatest.npy',
                 image_size=params['image_size'],
                 shuffle=False,
