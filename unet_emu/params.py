@@ -37,7 +37,7 @@ def norm_cube_log(data, scale):
     scale = np.array([scale, 1, 1]).reshape(shape)
     data = np.nan_to_num(data)
     data = data/scale
-    if len(data.shape==4):
+    if len(data.shape)==4:
         data[:,0,:,:] = np.log(1e-12+data[:,0,:,:])
     else:
         data[0,:,:] = np.log(1e-12+data[0,:,:])
