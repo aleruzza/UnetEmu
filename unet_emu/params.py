@@ -1,7 +1,7 @@
 import numpy as np
 import losses
 import torch
-name = 'tri'
+name = 'tri_256'
 ################### Normalization functions ###################################
 def scaleandlog(data, scale):
     data = np.nan_to_num(data)
@@ -73,7 +73,7 @@ params = {
     'norm_labels': norm_labels_gas,
     'n_test_log_images': 50,
     'num_channels': 96,
-    'channel_mult': "1, 1, 2, 3, 4",
+    'channel_mult': "",
     'num_res_blocks': 3,
     'pretrain': False,
     'n_param' : 4,
