@@ -145,7 +145,7 @@ def train(params, model):
                     wandb.log({"testset_emulations": images})
                 if ep==0:
                     images = []
-                    for i in range(len(x.xpu())):
+                    for i in range(len(x.cpu())):
                         image = wandb.Image(torch.tensor(np.float32(x[i].cpu())), mode='F')
                         images.append(image)
                     wandb.log({"testset_simulations": images})
