@@ -36,7 +36,13 @@ def norm_cube_log(data, scale):
     shape = [1,3,1,1] if len(data.shape)==4 else [3,1,1]
     scale = np.array([scale, 1, 1]).reshape(shape)
     data = np.nan_to_num(data)
-    return data/scale
+    data = data/scale
+    if len(data.shape==4):
+        data[:,0,:,:] = np.log(1e-12+data[:,0,:,:])
+    else:
+        data[0,:,:] = np.log(1e-12+data[0,:,:])
+        
+    return data
 
 
 ######################################################################
@@ -47,7 +53,7 @@ params = {
     'lr': 1e-4,
     'save_model': True,
     'savedir': f'../outputs/{name}',
-    'datadir': f'../data/gas_tri/',
+    'datadir': f'../data/gas_tri_256/',
     'mode': '128x128_disc_tri',
     'Override': True,
     'savefreq': 20,
@@ -58,7 +64,7 @@ params = {
     'sample_freq': 10, 
     'batch_size': 32,
     'rotaugm': False,
-    'image_size': 128,
+    'image_size': 256,
     'logima_freq': 20,
     'loss': torch.nn.MSELoss(),
     'unc': False,

@@ -8,6 +8,7 @@ import torchvision.transforms as T
 import torch
 from params import params
     
+image_size = params['image_size']
 
 ############ functions that read numpy array data ##############################
 
@@ -26,7 +27,7 @@ def get_labels_narray(base_path, labels):
 
 def get_pretraining_data(base_path, n=10):
     dataset = np.load(f'{base_path}/swe_data.npy')
-    dataset = dataset.reshape(-1, 128, 128)
+    dataset = dataset.reshape(-1, image_size, image_size)
     np.random.shuffle(dataset)
     return dataset[0:n]
 
@@ -46,7 +47,7 @@ def generate_ict(slopes, mode):
 ########### Initial conditions function generators ##################
 
 def generate_ict_mdeco(slopes):
-    r = np.logspace(np.log10(0.3), np.log10(3), 128)
+    r = np.logspace(np.log10(0.3), np.log10(3), image_size)
     t = np.linspace(0, 2*np.pi, 512)
     rr, _ = np.meshgrid(r, t)
     ict = np.float32(params['scale']*rr**(-slopes.reshape(-1,1,1)))
@@ -62,8 +63,8 @@ def generate_ict_mdeco(slopes):
 
 def generate_ict_128x128_disc(slopes, nonorm=False):
     #generating initial conditions
-    x = np.linspace(-3, 3, 128)
-    y = np.linspace(-3, 3, 128)
+    x = np.linspace(-3, 3, image_size)
+    y = np.linspace(-3, 3, image_size)
     xx, yy = np.meshgrid(x, y)
     r = np.sqrt(xx**2+yy**2)
     ict = np.float32(r**(-slopes.reshape(-1,1,1))*((r<3) & (r>0.4)))
@@ -74,8 +75,8 @@ def generate_ict_128x128_disc(slopes, nonorm=False):
     return ict
 
 def generate_ict_128x128_disc_tri(slopes):
-    x = np.linspace(-3, 3, 128)
-    y = np.linspace(-3, 3, 128)
+    x = np.linspace(-3, 3, image_size)
+    y = np.linspace(-3, 3, image_size)
     xx, yy = np.meshgrid(x, y)
     r = np.sqrt(xx**2+yy**2)
     vaz_ict = np.float32(r**(-0.5)*((r<3) & (r>0.4)))
@@ -85,7 +86,7 @@ def generate_ict_128x128_disc_tri(slopes):
     ict = np.concatenate([dens_ict, vaz_ict, vr_ict], axis=1)
     return np.float32(params['norm'](ict, 1))
 
-def generate_ict_cyl(slopes, nr=128, ntheta=512):
+def generate_ict_cyl(slopes, nr=image_size, ntheta=512):
     r = np.logspace(np.log10(0.3), np.log10(3), nr)
     t = np.linspace(0, 2*np.pi, ntheta)
     rr, _ = np.meshgrid(r, t)
