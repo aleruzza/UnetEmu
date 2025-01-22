@@ -139,13 +139,13 @@ def train(params, model):
                 #log some test images
                 if ep%params['logima_freq']==0:
                     images = []
-                    for i in range(params['n_test_log_images']):
+                    for i in range(len(x_pred.cpu())):
                         image = wandb.Image(torch.tensor(np.float32(x_pred[i].cpu())), mode='F')
                         images.append(image)
                     wandb.log({"testset_emulations": images})
                 if ep==0:
                     images = []
-                    for i in range(params['n_test_log_images']):
+                    for i in range(len(x.xpu())):
                         image = wandb.Image(torch.tensor(np.float32(x[i].cpu())), mode='F')
                         images.append(image)
                     wandb.log({"testset_simulations": images})
