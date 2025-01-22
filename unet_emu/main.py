@@ -28,7 +28,7 @@ def train(params, model):
     if params['pretrain']:
         dataset = PretrainDataset(
             folder=params['datadir'],
-            image_size=128,
+            image_size=params['image_size'],
             shuffle=True,
             n_param=params['n_param'],
             n_pretrain = params['n_pretrain']
@@ -55,8 +55,25 @@ def train(params, model):
     )
 
     #get test set
-    ict, testparam, xtest = get_testset(params)
-    
+    #ict, testparam, xtest = get_testset(params)
+    testset = TextImageDataset(
+                folder=params['datadir'],
+                label_file='paratest.csv',
+                data_file='datatest.npy',
+                image_size=params['image_size'],
+                shuffle=False,
+                rotaugm=params['rotaugm'],
+                mode=params['mode'],
+                device=params['device']
+            )
+    testloader = torch.utils.data.DataLoader(
+        testset,
+        batch_size=params['batch_size'],
+        shuffle=False,
+        num_workers=0,
+        pin_memory=True,
+    )
+
     # number of UNET parameters to be trained
     params_to_optimize = [
             {'params': model.parameters()}
@@ -104,7 +121,40 @@ def train(params, model):
                 torch.save(model.state_dict(), params['savedir'] + f"/model__epoch_{ep}_test_{params['name']}.pth")
         
         model.eval()
+        loss_test = torch.nn.MSELoss()
+        mean_loss_test = np.array([])
+        pbartest = tqdm(testloader)
         with torch.inference_mode():
+            for i, (x, p, ic) in enumerate(pbartest):
+                x = x.to(params['device'])
+                p = p.to(params['device'])
+                ic = ic.to(params['device'])
+                x_pred = model(ic, p)
+                
+                lossv = loss_test(x_pred, x)
+                mean_loss = np.append(mean_loss_test, [lossv.item()])
+                #mean_mse = np.append(mean_mse, [getmse(x, x_pred)])
+                pbar.set_description(f'loss: {lossv.item():.4f}')
+                
+                #log some test images
+                if ep%params['logima_freq']==0:
+                    images = []
+                    for i in range(params['n_test_log_images']):
+                        image = wandb.Image(torch.tensor(np.float32(x_pred[i])), mode='F')
+                        images.append(image)
+                    wandb.log({"testset_emulations": images})
+                if ep==0:
+                    images = []
+                    for i in range(params['n_test_log_images']):
+                        image = wandb.Image(torch.tensor(np.float32(x[i])), mode='F')
+                        images.append(image)
+                    wandb.log({"testset_simulations": images})
+                    
+            wandb.log({'mse_test_image':mean_loss_test.mean(), 'epoch':ep})
+                    
+                
+                
+            '''
             x_pred_t = model(ict, testparam)
             mse_test = getmse(x_pred_t.cpu(), xtest.cpu())
             wandb.log({'loss': mean_loss.mean(), 'epoch': ep, 'mse_test': mse_test})
@@ -136,6 +186,8 @@ def train(params, model):
             
             del x_pred_t
             torch.cuda.empty_cache()
+            '''
+            
         
                 
         

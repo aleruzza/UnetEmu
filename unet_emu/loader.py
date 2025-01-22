@@ -13,7 +13,7 @@ image_size = params['image_size']
 ############ functions that read numpy array data ##############################
 
 def get_image_files_narray(base_path):
-    image_files = np.load(f'{base_path}/data.npy')
+    image_files = np.load(f'{base_path}')
     return image_files
 
 
@@ -177,6 +177,8 @@ class TextImageDataset(Dataset):
     def __init__(
         self,
         folder="",
+        labels_file = "run4.csv",
+        data_file="data.npy",
         image_size=64,
         shuffle=False,
         rotaugm=False, 
@@ -185,8 +187,8 @@ class TextImageDataset(Dataset):
     ):
         super().__init__()
         folder = Path(folder)
-        self.data = get_image_files_narray(folder)
-        self.labels, self.slopes = get_labels_narray(f"{folder}/run4.csv", labels=params['infer_labels'])
+        self.data = get_image_files_narray(f'{folder}/{data_file}')
+        self.labels, self.slopes = get_labels_narray(f'{folder}/{labels_file}', labels=params['infer_labels'])
         self.ics = generate_ict(self.slopes, mode=mode )
         self.rotaugm = rotaugm
         self.shuffle = shuffle
