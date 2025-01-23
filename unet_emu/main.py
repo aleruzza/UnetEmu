@@ -23,6 +23,15 @@ def image_from_mdeco(mdeco):
     
     
 def train(params, model):
+    
+    x = np.linspace(-3,3,params['image_size'])
+    y = np.linspace(-3,3,params['image_size'])
+    xx, yy = np.meshgrid(x, y)
+    rr = np.sqrt(xx**2+yy**2)
+    #tt = np.arctan2(yy,xx)
+
+    mask = torch.float32((rr>0.4) & (rr<3), device=params['device']).reshape(1,1,params['image_size'],params['image_size'])
+    
     # initialize the dataset
     #if pretrain load the pretraining dataset
     if params['pretrain']:
@@ -42,7 +51,8 @@ def train(params, model):
                 shuffle=True,
                 rotaugm=params['rotaugm'],
                 mode=params['mode'],
-                device=params['device']
+                device=params['device'],
+                inf_channel=params['inf_channel']
             )
 
     # dataloader setup
@@ -64,7 +74,8 @@ def train(params, model):
                 shuffle=False,
                 rotaugm=params['rotaugm'],
                 mode=params['mode'],
-                device=params['device']
+                device=params['device'],
+                inf_channel=params['inf_channel']
             )
     testloader = torch.utils.data.DataLoader(
         testset,
@@ -108,7 +119,7 @@ def train(params, model):
             ic = ic.to(params['device'])
             x_pred = model(ic, p)
             
-            lossv = loss(x_pred, x)
+            lossv = loss(x_pred*mask, x*mask)
             lossv.backward()
             mean_loss = np.append(mean_loss, [lossv.item()])
             #mean_mse = np.append(mean_mse, [getmse(x, x_pred)])
@@ -116,6 +127,8 @@ def train(params, model):
             #wandb.log({'mse_train': mean_mse, 'epoch': ep})
             optim.step()
             
+        wandb.log({'loss':mean_loss.mean(), 'epoch':ep})
+        
         if params['save_model']:
             if ep%params['savefreq']==0:
                 torch.save(model.state_dict(), params['savedir'] + f"/model__epoch_{ep}_test_{params['name']}.pth")
@@ -131,8 +144,8 @@ def train(params, model):
                 ic = ic.to(params['device'])
                 x_pred = model(ic, p)
                 
-                lossv = loss_test(x_pred, x)
-                mean_loss = np.append(mean_loss_test, [lossv.item()])
+                lossv = loss_test(x_pred*mask, x*mask)
+                mean_loss_test = np.append(mean_loss_test, [lossv.item()])
                 #mean_mse = np.append(mean_mse, [getmse(x, x_pred)])
                 pbar.set_description(f'loss: {lossv.item():.4f}')
                 

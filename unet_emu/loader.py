@@ -183,11 +183,14 @@ class TextImageDataset(Dataset):
         shuffle=False,
         rotaugm=False, 
         mode='cyl',
-        device='cpu'
+        device='cpu',
+        inf_channel=None
     ):
         super().__init__()
         folder = Path(folder)
         self.data = get_image_files_narray(f'{folder}/{data_file}')
+        if inf_channel is not None:
+            self.data = self.data[:,[inf_channel],:,:]
         self.labels, self.slopes = get_labels_narray(f'{folder}/{labels_file}', labels=params['infer_labels'])
         self.ics = generate_ict(self.slopes, mode=mode )
         self.rotaugm = rotaugm

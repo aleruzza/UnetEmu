@@ -1,7 +1,7 @@
 import numpy as np
 import losses
 import torch
-name = 'tri_256'
+name = 'vr_128'
 ################### Normalization functions ###################################
 def scaleandlog(data, scale):
     data = np.nan_to_num(data)
@@ -34,7 +34,7 @@ def norm_labels_gas(labels):
 
 def norm_cube_log(data, scale):
     shape = [1,3,1,1] if len(data.shape)==4 else [3,1,1]
-    scale = np.array([scale, 1, 1]).reshape(shape)
+    scale = np.array([scale, 1, 1e-3]).reshape(shape)
     data = np.nan_to_num(data)
     data = data/scale
     if len(data.shape)==4:
@@ -53,8 +53,8 @@ params = {
     'lr': 1e-4,
     'save_model': True,
     'savedir': f'../outputs/{name}',
-    'datadir': f'../data/gas_tri_256/',
-    'mode': '128x128_disc_tri',
+    'datadir': f'../data/gas_tri/',
+    'mode': '128x128_disc',
     'Override': True,
     'savefreq': 20,
     'cond': True,
@@ -64,11 +64,11 @@ params = {
     'sample_freq': 10, 
     'batch_size': 32,
     'rotaugm': False,
-    'image_size': 256,
+    'image_size': 128,
     'logima_freq': 20,
     'loss': torch.nn.MSELoss(),
     'unc': False,
-    'norm': norm_cube_log,
+    'norm': nonorm,
     'scale': 1e-3,
     'norm_labels': norm_labels_gas,
     'n_test_log_images': 50,
@@ -78,6 +78,7 @@ params = {
     'pretrain': False,
     'n_param' : 4,
     'infer_labels': ['PlanetMass', 'AspectRatio', 'Alpha', 'FlaringIndex'],
-    'n_pretrain': 10000 #note: it must be <101,000
+    'n_pretrain': 10000, #note: it must be <101,000,
+    'inf_channel': 2
 }
 
