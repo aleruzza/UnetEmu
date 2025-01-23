@@ -30,7 +30,7 @@ def train(params, model):
     rr = np.sqrt(xx**2+yy**2)
     #tt = np.arctan2(yy,xx)
 
-    mask = torch.float32((rr>0.4) & (rr<3), device=params['device']).reshape(1,1,params['image_size'],params['image_size'])
+    mask = torch.tensor((rr>0.4) & (rr<3), device=params['device'], dtype=torch.float32).reshape(1,1,params['image_size'],params['image_size'])
     
     # initialize the dataset
     #if pretrain load the pretraining dataset
