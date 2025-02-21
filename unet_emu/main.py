@@ -226,6 +226,8 @@ if __name__ == "__main__":
             exit()
     else:
         os.mkdir(params['savedir'])
+        
+    os.system(f'cp params.py params["savedir"]/params.py')
 
     #checking file with parameter history and adding this run
     if os.path.exists('parahist.csv'):
