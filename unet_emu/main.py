@@ -243,7 +243,7 @@ if __name__ == "__main__":
     with wandb.init(project='emulator_unet', config=params, name=params['name']):
         #begin train
         if params['resume']:
-            if not os.path.exists(params['resume_from']):
+            if not os.path.exists(f"{params['savedir']}/model__epoch_{params['resume_from']}_test_{params['name']}.pth"):
                 print('Error! the model wich you want to resume from does not exist!\n Exiting...')
                 exit()
             else:
