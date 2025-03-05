@@ -8,7 +8,7 @@ from nn import timestep_embedding
 from unet import UNetModel
 
 
-def create_nnmodel(n_param,image_size,num_channels=96,num_res_blocks=3, channel_mult="", mode='cyl', unc=False):
+def create_nnmodel(n_param,image_size,num_channels=96,num_res_blocks=3, channel_mult="", mode='cyl', unc=False, drop_skip_connection_ids=[]):
     #num_channels= #128,192
     #num_res_blocks=3 #2,3
     #channel_mult=""
@@ -51,6 +51,7 @@ def create_nnmodel(n_param,image_size,num_channels=96,num_res_blocks=3, channel_
     o_ch = i_ch*2 if unc else i_ch
     
     return Para2ImUNet(n_param=n_param,
+        drop_skip_connections_ids=drop_skip_connections_ids,
         in_channels=i_ch,
         model_channels=num_channels,
         out_channels=o_ch,
@@ -78,12 +79,14 @@ class Para2ImUNet(UNetModel):
     def __init__(
         self,
         n_param,
+        drop_skip_connections_ids,
         *args,
         **kwargs,
     ):
         self.n_param = n_param
         super().__init__(*args, **kwargs)
         self.token_embedding = nn.Linear(n_param, self.model_channels * 4)
+        self.drop_skip_connections_ids = drop_skip_connections_ids
 
     def convert_to_fp16(self):
         super().convert_to_fp16()
@@ -106,13 +109,17 @@ class Para2ImUNet(UNetModel):
 
         h = x.type(self.dtype)
         #print(h.shape)
-        for module in self.input_blocks:
+        block_ids = []
+        for id, module in enumerate(self.input_blocks):
             h = module(h, emb)
             #print(h.shape)
             hs.append(h)
+            block_ids.append(id)
         h = self.middle_block(h, emb)
         for module in self.output_blocks:
-            h = th.cat([h, hs.pop()], dim=1)
+            cid = block_ids.pop()
+            if cid not in self.drop_skip_connections_ids:
+                h = th.cat([h, hs.pop()], dim=1)
             #print(h.shape)
             h = module(h, emb)
         h = h.type(x.dtype)
