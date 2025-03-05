@@ -100,7 +100,8 @@ def train(params, model):
 
     #loop
     wandb.watch(model, criterion=loss, log_freq=10)
-    for ep in range(params['nepochs']):
+    starting_epoch = params['resume_from']+1 if params['resume'] else 0
+    for ep in range(starting_epoch, params['nepochs']):
         print(f'epoch {ep}')
         model.train() #setting model in training mode
         
