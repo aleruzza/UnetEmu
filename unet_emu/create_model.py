@@ -120,7 +120,7 @@ class Para2ImUNet(UNetModel):
             cid = block_ids.pop()
             hss = hs.pop()
             if cid in self.drop_skip_connections_ids:
-                h = th.cat([h, torch.zeros(*hss.shape)], dim=1)
+                h = th.cat([h, hss*0], dim=1)
             else:
                 h = th.cat([h, hss], dim=1)
             #print(h.shape)
