@@ -247,7 +247,12 @@ if __name__ == "__main__":
                 exit()
             else:
                 #TODO: implement possibility to resume
-                exit()
+                emulator = create_nnmodel(n_param=params['n_param'], image_size=params['image_size'], num_channels=params['num_channels'],
+                                      num_res_blocks=params['num_res_blocks'], channel_mult=params['channel_mult'],
+                                      mode=params['mode'], unc=params['unc'], drop_skip_connections_ids=params['drop_skip_connections_ids']).to(device=params['device'])
+                dataem = torch.load(f"{params['savedir']}/model__epoch_{params['resume_from']}_test_{params['name']}.pth",  map_location=torch.device(params['device']))
+                emulator.load_state_dict(dataem)
+                
         else:
             emulator = create_nnmodel(n_param=params['n_param'], image_size=params['image_size'], num_channels=params['num_channels'],
                                       num_res_blocks=params['num_res_blocks'], channel_mult=params['channel_mult'],
