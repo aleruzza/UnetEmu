@@ -118,8 +118,11 @@ class Para2ImUNet(UNetModel):
         h = self.middle_block(h, emb)
         for module in self.output_blocks:
             cid = block_ids.pop()
-            if cid not in self.drop_skip_connections_ids:
-                h = th.cat([h, hs.pop()], dim=1)
+            hss = hs.pop()
+            if cid in self.drop_skip_connections_ids:
+                h = th.cat([h, torch.zeros(*hss.shape)], dim=1)
+            else:
+                h = th.cat([h, hss], dim=1)
             #print(h.shape)
             h = module(h, emb)
         h = h.type(x.dtype)
