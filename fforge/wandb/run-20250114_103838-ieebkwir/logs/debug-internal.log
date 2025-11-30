@@ -1,0 +1,176 @@
+2025-01-14 10:38:38,773 INFO    StreamThr :12281 [internal.py:wandb_internal():85] W&B internal server running at pid: 12281, started at: 2025-01-14 10:38:38.773101
+2025-01-14 10:38:38,775 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: status
+2025-01-14 10:38:38,783 INFO    WriterThread:12281 [datastore.py:open_for_write():87] open: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/run-ieebkwir.wandb
+2025-01-14 10:38:38,783 DEBUG   SenderThread:12281 [sender.py:send():378] send: header
+2025-01-14 10:38:38,787 DEBUG   SenderThread:12281 [sender.py:send():378] send: run
+2025-01-14 10:38:39,297 INFO    SenderThread:12281 [dir_watcher.py:__init__():211] watching files in: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files
+2025-01-14 10:38:39,297 INFO    SenderThread:12281 [sender.py:_start_run_threads():1123] run started: ieebkwir with start time 1736847518.781329
+2025-01-14 10:38:39,299 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: check_version
+2025-01-14 10:38:39,300 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: check_version
+2025-01-14 10:38:39,381 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: run_start
+2025-01-14 10:38:39,382 DEBUG   HandlerThread:12281 [system_info.py:__init__():26] System info init
+2025-01-14 10:38:39,382 DEBUG   HandlerThread:12281 [system_info.py:__init__():41] System info init done
+2025-01-14 10:38:39,382 INFO    HandlerThread:12281 [system_monitor.py:start():194] Starting system monitor
+2025-01-14 10:38:39,382 INFO    SystemMonitor:12281 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2025-01-14 10:38:39,382 INFO    HandlerThread:12281 [system_monitor.py:probe():214] Collecting system info
+2025-01-14 10:38:39,383 INFO    SystemMonitor:12281 [interfaces.py:start():188] Started cpu monitoring
+2025-01-14 10:38:39,383 INFO    SystemMonitor:12281 [interfaces.py:start():188] Started disk monitoring
+2025-01-14 10:38:39,384 INFO    SystemMonitor:12281 [interfaces.py:start():188] Started memory monitoring
+2025-01-14 10:38:39,384 INFO    SystemMonitor:12281 [interfaces.py:start():188] Started network monitoring
+2025-01-14 10:38:39,389 DEBUG   HandlerThread:12281 [system_info.py:probe():150] Probing system
+2025-01-14 10:38:39,391 DEBUG   HandlerThread:12281 [system_info.py:_probe_git():135] Probing git
+2025-01-14 10:38:39,397 DEBUG   HandlerThread:12281 [system_info.py:_probe_git():143] Probing git done
+2025-01-14 10:38:39,397 DEBUG   HandlerThread:12281 [system_info.py:probe():198] Probing system done
+2025-01-14 10:38:39,397 DEBUG   HandlerThread:12281 [system_monitor.py:probe():223] {'os': 'Linux-6.5.6-76060506-generic-x86_64-with-glibc2.35', 'python': '3.10.12', 'heartbeatAt': '2025-01-14T09:38:39.389077', 'startedAt': '2025-01-14T09:38:38.769577', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '/home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/main.py', 'codePathLocal': 'main.py', 'codePath': 'unet_emu/main.py', 'git': {'remote': 'git@github.com:aleruzza/UnetEmu.git', 'commit': '2d222777a2849e016f3c9ad0564e8c4cf967fad8'}, 'email': 'alessandro.ruzza99@gmail.com', 'root': '/home/aleruzza/UNI/SCIENCE/UnetEmu', 'host': 'pop-os', 'username': 'aleruzza', 'executable': '/usr/bin/python3.10', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 2912.5922499999997, 'min': 400.0, 'max': 4583.0}, 'cpu_freq_per_core': [{'current': 3339.369, 'min': 400.0, 'max': 4583.0}, {'current': 2549.136, 'min': 400.0, 'max': 4583.0}, {'current': 2777.734, 'min': 400.0, 'max': 4583.0}, {'current': 3374.777, 'min': 400.0, 'max': 4583.0}, {'current': 2202.363, 'min': 400.0, 'max': 4583.0}, {'current': 2594.844, 'min': 400.0, 'max': 4583.0}, {'current': 3212.998, 'min': 400.0, 'max': 4583.0}, {'current': 3496.44, 'min': 400.0, 'max': 4583.0}, {'current': 2360.12, 'min': 400.0, 'max': 4583.0}, {'current': 3720.043, 'min': 400.0, 'max': 4583.0}, {'current': 2218.766, 'min': 400.0, 'max': 4583.0}, {'current': 3104.517, 'min': 400.0, 'max': 4583.0}], 'disk': {'/': {'total': 459.5024719238281, 'used': 411.0844268798828}}, 'memory': {'total': 14.39346694946289}}
+2025-01-14 10:38:39,397 INFO    HandlerThread:12281 [system_monitor.py:probe():224] Finished collecting system info
+2025-01-14 10:38:39,397 INFO    HandlerThread:12281 [system_monitor.py:probe():227] Publishing system info
+2025-01-14 10:38:39,397 INFO    HandlerThread:12281 [system_monitor.py:probe():229] Finished publishing system info
+2025-01-14 10:38:39,403 DEBUG   SenderThread:12281 [sender.py:send():378] send: files
+2025-01-14 10:38:39,403 INFO    SenderThread:12281 [sender.py:_save_file():1389] saving file wandb-metadata.json with policy now
+2025-01-14 10:38:39,603 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: python_packages
+2025-01-14 10:38:39,604 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: python_packages
+2025-01-14 10:38:39,646 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: stop_status
+2025-01-14 10:38:39,646 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: stop_status
+2025-01-14 10:38:39,908 DEBUG   SenderThread:12281 [sender.py:send():378] send: telemetry
+2025-01-14 10:38:40,012 INFO    wandb-upload_0:12281 [upload_job.py:push():130] Uploaded file /tmp/tmpjzvc0k_5wandb/yp5i1jqs-wandb-metadata.json
+2025-01-14 10:38:40,126 DEBUG   SenderThread:12281 [sender.py:send():378] send: telemetry
+2025-01-14 10:38:40,126 DEBUG   SenderThread:12281 [sender.py:send():378] send: exit
+2025-01-14 10:38:40,126 INFO    SenderThread:12281 [sender.py:send_exit():585] handling exit code: 1
+2025-01-14 10:38:40,126 INFO    SenderThread:12281 [sender.py:send_exit():587] handling runtime: 0
+2025-01-14 10:38:40,126 INFO    SenderThread:12281 [sender.py:_save_file():1389] saving file wandb-summary.json with policy end
+2025-01-14 10:38:40,126 INFO    SenderThread:12281 [sender.py:send_exit():593] send defer
+2025-01-14 10:38:40,127 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:40,127 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 0
+2025-01-14 10:38:40,127 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:40,127 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 0
+2025-01-14 10:38:40,127 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 1
+2025-01-14 10:38:40,127 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:40,127 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 1
+2025-01-14 10:38:40,127 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:40,127 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 1
+2025-01-14 10:38:40,127 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 2
+2025-01-14 10:38:40,127 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:40,127 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 2
+2025-01-14 10:38:40,127 INFO    HandlerThread:12281 [system_monitor.py:finish():203] Stopping system monitor
+2025-01-14 10:38:40,127 INFO    HandlerThread:12281 [interfaces.py:finish():200] Joined cpu monitor
+2025-01-14 10:38:40,127 INFO    HandlerThread:12281 [interfaces.py:finish():200] Joined disk monitor
+2025-01-14 10:38:40,127 INFO    HandlerThread:12281 [interfaces.py:finish():200] Joined memory monitor
+2025-01-14 10:38:40,127 DEBUG   SystemMonitor:12281 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2025-01-14 10:38:40,128 DEBUG   SystemMonitor:12281 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2025-01-14 10:38:40,128 DEBUG   SystemMonitor:12281 [system_monitor.py:_start():183] Publishing last batch of metrics
+2025-01-14 10:38:40,128 INFO    HandlerThread:12281 [interfaces.py:finish():200] Joined network monitor
+2025-01-14 10:38:40,128 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:40,128 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 2
+2025-01-14 10:38:40,128 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 3
+2025-01-14 10:38:40,128 DEBUG   SenderThread:12281 [sender.py:send():378] send: stats
+2025-01-14 10:38:40,129 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:40,129 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 3
+2025-01-14 10:38:40,129 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:40,129 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 3
+2025-01-14 10:38:40,129 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 4
+2025-01-14 10:38:40,129 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:40,129 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 4
+2025-01-14 10:38:40,129 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:40,129 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 4
+2025-01-14 10:38:40,129 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 5
+2025-01-14 10:38:40,129 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:40,129 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 5
+2025-01-14 10:38:40,129 DEBUG   SenderThread:12281 [sender.py:send():378] send: summary
+2025-01-14 10:38:40,129 INFO    SenderThread:12281 [sender.py:_save_file():1389] saving file wandb-summary.json with policy end
+2025-01-14 10:38:40,130 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:40,130 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 5
+2025-01-14 10:38:40,130 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 6
+2025-01-14 10:38:40,130 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:40,130 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 6
+2025-01-14 10:38:40,130 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:40,130 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 6
+2025-01-14 10:38:40,132 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: status_report
+2025-01-14 10:38:40,299 INFO    Thread-12 :12281 [dir_watcher.py:_on_file_created():271] file/dir created: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/output.log
+2025-01-14 10:38:40,299 INFO    Thread-12 :12281 [dir_watcher.py:_on_file_created():271] file/dir created: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/wandb-summary.json
+2025-01-14 10:38:40,300 INFO    Thread-12 :12281 [dir_watcher.py:_on_file_created():271] file/dir created: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/requirements.txt
+2025-01-14 10:38:40,300 INFO    Thread-12 :12281 [dir_watcher.py:_on_file_created():271] file/dir created: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/wandb-metadata.json
+2025-01-14 10:38:40,304 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 7
+2025-01-14 10:38:40,304 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:40,304 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 7
+2025-01-14 10:38:40,304 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:40,304 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 7
+2025-01-14 10:38:41,126 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: poll_exit
+2025-01-14 10:38:41,298 INFO    Thread-12 :12281 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/config.yaml
+2025-01-14 10:38:42,139 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 8
+2025-01-14 10:38:42,139 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: poll_exit
+2025-01-14 10:38:42,139 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:42,139 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 8
+2025-01-14 10:38:42,140 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:42,140 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 8
+2025-01-14 10:38:42,140 INFO    SenderThread:12281 [job_builder.py:build():432] Attempting to build job artifact
+2025-01-14 10:38:42,140 INFO    SenderThread:12281 [job_builder.py:_get_source_type():565] is repo sourced job
+2025-01-14 10:38:42,173 INFO    SenderThread:12281 [job_builder.py:build():541] adding wandb-job metadata file
+2025-01-14 10:38:42,182 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 9
+2025-01-14 10:38:42,182 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:42,183 DEBUG   SenderThread:12281 [sender.py:send():378] send: artifact
+2025-01-14 10:38:42,183 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 9
+2025-01-14 10:38:42,298 INFO    Thread-12 :12281 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/output.log
+2025-01-14 10:38:43,126 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: poll_exit
+2025-01-14 10:38:43,298 INFO    wandb-upload_1:12281 [upload_job.py:push():88] Uploaded file /home/aleruzza/.local/share/wandb/artifacts/staging/tmpcyuqm_9a
+2025-01-14 10:38:43,362 INFO    wandb-upload_0:12281 [upload_job.py:push():88] Uploaded file /tmp/tmpnje6qaqt/wandb-job.json
+2025-01-14 10:38:44,305 INFO    SenderThread:12281 [sender.py:send_artifact():1467] sent artifact job-git_github.com_aleruzza_UnetEmu.git_unet_emu_main.py - {'id': 'QXJ0aWZhY3Q6MTQzOTUxMjM0NA==', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjUzNzI0MDM0MQ==', 'latestArtifact': None}}
+2025-01-14 10:38:44,305 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:44,305 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 9
+2025-01-14 10:38:44,305 INFO    SenderThread:12281 [dir_watcher.py:finish():358] shutting down directory watcher
+2025-01-14 10:38:45,300 INFO    SenderThread:12281 [dir_watcher.py:finish():388] scan: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files
+2025-01-14 10:38:45,300 INFO    SenderThread:12281 [dir_watcher.py:finish():402] scan save: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/wandb-summary.json wandb-summary.json
+2025-01-14 10:38:45,300 INFO    SenderThread:12281 [dir_watcher.py:finish():402] scan save: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/wandb-metadata.json wandb-metadata.json
+2025-01-14 10:38:45,300 INFO    SenderThread:12281 [dir_watcher.py:finish():402] scan save: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/requirements.txt requirements.txt
+2025-01-14 10:38:45,301 INFO    SenderThread:12281 [dir_watcher.py:finish():402] scan save: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/config.yaml config.yaml
+2025-01-14 10:38:45,301 INFO    SenderThread:12281 [dir_watcher.py:finish():402] scan save: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/output.log output.log
+2025-01-14 10:38:45,308 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 10
+2025-01-14 10:38:45,308 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: poll_exit
+2025-01-14 10:38:45,309 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:45,310 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 10
+2025-01-14 10:38:45,312 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:45,312 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 10
+2025-01-14 10:38:45,312 INFO    SenderThread:12281 [file_pusher.py:finish():169] shutting down file pusher
+2025-01-14 10:38:45,695 INFO    wandb-upload_1:12281 [upload_job.py:push():130] Uploaded file /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/wandb-summary.json
+2025-01-14 10:38:45,698 INFO    wandb-upload_0:12281 [upload_job.py:push():130] Uploaded file /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/requirements.txt
+2025-01-14 10:38:45,841 INFO    wandb-upload_2:12281 [upload_job.py:push():130] Uploaded file /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/config.yaml
+2025-01-14 10:38:45,999 INFO    wandb-upload_3:12281 [upload_job.py:push():130] Uploaded file /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/files/output.log
+2025-01-14 10:38:46,128 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: poll_exit
+2025-01-14 10:38:46,129 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: poll_exit
+2025-01-14 10:38:46,199 INFO    Thread-11 (_thread_body):12281 [sender.py:transition_state():613] send defer: 11
+2025-01-14 10:38:46,200 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:46,200 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 11
+2025-01-14 10:38:46,200 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:46,200 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 11
+2025-01-14 10:38:46,200 INFO    SenderThread:12281 [file_pusher.py:join():175] waiting for file pusher
+2025-01-14 10:38:46,201 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 12
+2025-01-14 10:38:46,201 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:46,201 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 12
+2025-01-14 10:38:46,201 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:46,201 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 12
+2025-01-14 10:38:46,201 INFO    SenderThread:12281 [file_stream.py:finish():601] file stream finish called
+2025-01-14 10:38:46,436 INFO    SenderThread:12281 [file_stream.py:finish():605] file stream finish is done
+2025-01-14 10:38:46,436 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 13
+2025-01-14 10:38:46,437 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:46,437 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 13
+2025-01-14 10:38:46,437 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:46,437 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 13
+2025-01-14 10:38:46,438 INFO    SenderThread:12281 [sender.py:transition_state():613] send defer: 14
+2025-01-14 10:38:46,438 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: defer
+2025-01-14 10:38:46,438 INFO    HandlerThread:12281 [handler.py:handle_request_defer():184] handle defer: 14
+2025-01-14 10:38:46,439 DEBUG   SenderThread:12281 [sender.py:send():378] send: final
+2025-01-14 10:38:46,439 DEBUG   SenderThread:12281 [sender.py:send():378] send: footer
+2025-01-14 10:38:46,439 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: defer
+2025-01-14 10:38:46,439 INFO    SenderThread:12281 [sender.py:send_request_defer():609] handle sender defer: 14
+2025-01-14 10:38:46,440 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: poll_exit
+2025-01-14 10:38:46,440 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: poll_exit
+2025-01-14 10:38:46,441 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: internal_messages
+2025-01-14 10:38:46,441 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: server_info
+2025-01-14 10:38:46,442 DEBUG   SenderThread:12281 [sender.py:send_request():405] send_request: server_info
+2025-01-14 10:38:46,486 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: get_summary
+2025-01-14 10:38:46,486 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: sampled_history
+2025-01-14 10:38:46,573 DEBUG   HandlerThread:12281 [handler.py:handle_request():158] handle_request: shutdown
+2025-01-14 10:38:46,574 INFO    HandlerThread:12281 [handler.py:finish():882] shutting down handler
+2025-01-14 10:38:47,442 INFO    WriterThread:12281 [datastore.py:close():296] close: /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/run-ieebkwir.wandb
+2025-01-14 10:38:47,573 INFO    SenderThread:12281 [sender.py:finish():1545] shutting down sender
+2025-01-14 10:38:47,573 INFO    SenderThread:12281 [file_pusher.py:finish():169] shutting down file pusher
+2025-01-14 10:38:47,573 INFO    SenderThread:12281 [file_pusher.py:join():175] waiting for file pusher

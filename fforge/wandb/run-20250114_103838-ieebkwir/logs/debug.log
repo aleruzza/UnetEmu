@@ -1,0 +1,35 @@
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_setup.py:_flush():76] Current SDK version is 0.17.0
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_setup.py:_flush():76] Configure stats pid to 12205
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_setup.py:_flush():76] Loading settings from /home/aleruzza/.config/wandb/settings
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_setup.py:_flush():76] Loading settings from /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/settings
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'unet_emu/main.py', 'program_abspath': '/home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/main.py', 'program': '/home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/main.py'}
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_setup.py:_flush():76] Applying login settings: {}
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_init.py:_log_setup():520] Logging user logs to /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/logs/debug.log
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_init.py:_log_setup():521] Logging internal logs to /home/aleruzza/UNI/SCIENCE/UnetEmu/unet_emu/wandb/run-20250114_103838-ieebkwir/logs/debug-internal.log
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_init.py:init():560] calling init triggers
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_init.py:init():567] wandb.init called with sweep_config: {}
+config: {'name': 'tri', 'device': 'cuda', 'nepochs': 801, 'lr': 0.0001, 'save_model': True, 'savedir': '../outputs/tri', 'datadir': './data/gas_tri/', 'mode': '128x128_disc_tri', 'Override': False, 'savefreq': 20, 'cond': True, 'lr_decay': False, 'resume': False, 'periodic_bound_x': False, 'sample_freq': 10, 'batch_size': 32, 'rotaugm': False, 'image_size': 128, 'logima_freq': 20, 'loss': MSELoss(), 'unc': False, 'norm': <function norm_cube_log at 0x1505e3136320>, 'scale': 0.001, 'norm_labels': <function norm_labels at 0x1505e324f7f0>, 'n_test_log_images': 50, 'num_channels': 96, 'channel_mult': '1, 1, 2, 3, 4', 'num_res_blocks': 3, 'pretrain': False, 'n_param': 4, 'infer_labels': ['PlanetMass', 'AspectRatio', 'Alpha', 'FlaringIndex'], 'n_pretrain': 10000, 'index': 0}
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_init.py:init():610] starting backend
+2025-01-14 10:38:38,770 INFO    MainThread:12205 [wandb_init.py:init():614] setting up manager
+2025-01-14 10:38:38,771 INFO    MainThread:12205 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2025-01-14 10:38:38,781 INFO    MainThread:12205 [wandb_init.py:init():622] backend started and connected
+2025-01-14 10:38:38,782 INFO    MainThread:12205 [wandb_init.py:init():711] updated telemetry
+2025-01-14 10:38:38,786 INFO    MainThread:12205 [wandb_init.py:init():744] communicating run to backend with 90.0 second timeout
+2025-01-14 10:38:39,299 INFO    MainThread:12205 [wandb_run.py:_on_init():2396] communicating current version
+2025-01-14 10:38:39,376 INFO    MainThread:12205 [wandb_run.py:_on_init():2405] got version response upgrade_message: "wandb version 0.19.3 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2025-01-14 10:38:39,376 INFO    MainThread:12205 [wandb_init.py:init():795] starting run threads in backend
+2025-01-14 10:38:39,604 INFO    MainThread:12205 [wandb_run.py:_console_start():2374] atexit reg
+2025-01-14 10:38:39,604 INFO    MainThread:12205 [wandb_run.py:_redirect():2229] redirect: wrap_raw
+2025-01-14 10:38:39,604 INFO    MainThread:12205 [wandb_run.py:_redirect():2294] Wrapping output streams.
+2025-01-14 10:38:39,604 INFO    MainThread:12205 [wandb_run.py:_redirect():2319] Redirects installed.
+2025-01-14 10:38:39,605 INFO    MainThread:12205 [wandb_init.py:init():838] run started, returning control to user process
+2025-01-14 10:38:40,125 INFO    MainThread:12205 [wandb_run.py:_finish():2103] finishing run alessandro-ruzza/emulator_unet/ieebkwir
+2025-01-14 10:38:40,125 INFO    MainThread:12205 [wandb_run.py:_atexit_cleanup():2343] got exitcode: 1
+2025-01-14 10:38:40,125 INFO    MainThread:12205 [wandb_run.py:_restore():2326] restore
+2025-01-14 10:38:40,125 INFO    MainThread:12205 [wandb_run.py:_restore():2332] restore done
+2025-01-14 10:38:47,578 INFO    MainThread:12205 [wandb_run.py:_footer_history_summary_info():3994] rendering history
+2025-01-14 10:38:47,578 INFO    MainThread:12205 [wandb_run.py:_footer_history_summary_info():4026] rendering summary
+2025-01-14 10:38:47,584 INFO    MainThread:12205 [wandb_run.py:_footer_sync_info():3953] logging synced files
