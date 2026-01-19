@@ -69,11 +69,11 @@ class Emulator:
         self.pp_dom = pp[self.dom_mask]
         
 
-    def emulate(self, alpha, h, planetMass, sigmaSlope, flaringIndex, fields=['dens', 'vphi', 'vr'], norm=True, v_sign=-1):
+    def emulate(self, alpha, h, planetMass, sigmaSlope, flaringIndex, fields=['dens', 'vphi', 'vr'], norm=True, v_sign=+1):
         '''
             This returns the emulated fields of a disk in the cartesian coordinates defined in init.
         '''
-        params_l = np.array([planetMass, h, alpha, flaringIndex]).reshape(1, 4)
+        params_l = np.stack([planetMass, h, alpha, flaringIndex]).reshape(4,-1).T
         
         if norm:
             norm_params = norm_labels(params_l)
@@ -81,10 +81,10 @@ class Emulator:
             norm_params = params_l
             sigmaSlope = (sigmaSlope+1)*(1.2-0.5)/2 + 0.5
         
-        return self.emulate_normparams(norm_params=norm_params, sigmaSlope=sigmaSlope, fields=fields, v_sign=-1)
+        return self.emulate_normparams(norm_params=norm_params, sigmaSlope=sigmaSlope, fields=fields, v_sign=v_sign)
         
     
-    def emulate_normparams(self, norm_params, sigmaSlope, fields=['dens', 'vphi', 'vr'], v_sign=-1):
+    def emulate_normparams(self, norm_params, sigmaSlope, fields=['dens', 'vphi', 'vr'], v_sign=+1):
         
         result = []
     
@@ -98,10 +98,13 @@ class Emulator:
                 raise NotImplementedError()
             factor=1.
             if key=='vphi':
-                factor=-1.*v_sign
-            result.append(factor*self.emulators[key](ic[:, [self.ict_comp_dict[key]]], norm_params).detach()[0][:,::-v_sign])
+                factor=v_sign
+            result_sing = factor*self.emulators[key](ic[:, [self.ict_comp_dict[key]]], norm_params).detach()
+            if v_sign == +1:
+                result_sing = result_sing.flip(-2)
+            result.append(result_sing)
                 
-        return torch.concatenate(result, axis=0)
+        return torch.concatenate(result, axis=1) #(N, fields, NX, NY)
 
 
     def emulate_dens(self, alpha, h, planetMass, sigmaSlope, flaringIndex):
@@ -133,6 +136,8 @@ class Emulator:
         sigmaSlope=None,
         norm=True,
         interp_3d='SPHERICAL',
+        discminer_integr = True,
+        mask_only_ppos = False,
         **extrap_kwargs,
     ):
 
@@ -156,28 +161,28 @@ class Emulator:
             Mstar = 1
 
         #v_sign=+1 is clockwise
-        if "v_sign" in extrap_kwargs.keys():
-            v_sign = extrap_kwargs["v_sign"]
+        if "vel_sign" in extrap_kwargs.keys():
+            vel_sign = extrap_kwargs["vel_sign"]
         else:
-            v_sign = 1
+            vel_sign = 1
 
         if sigmaSlope==None:
             if norm:
                 #print('using norm=True')
-                sigmaSlope = 2*flaringIndex + 0.5
+                sigmaSlope = 2*np.array(flaringIndex) + 0.5
             else:
                 #print('using norm=False')
-                sigmaSlope = flaringIndex
+                sigmaSlope = np.array(flaringIndex)
             
         v3d = (
-            self.emulate(alpha, h, planetMass, sigmaSlope, flaringIndex, fields=['vphi', 'vr'], norm=norm, v_sign=v_sign)
+            self.emulate(alpha, h, planetMass, sigmaSlope, flaringIndex, fields=['vphi', 'vr'], norm=norm, v_sign=vel_sign)
             .detach()
             .numpy()
         )
 
         rr_dom = self.rr_dom * R_p
         pp_dom = self.per_b(self.pp_dom + phi_p)
-        v3d_dom = v3d[:, self.dom_mask]
+        v3d_dom = v3d[:,:, self.dom_mask]
         x_dom = rr_dom * np.cos(pp_dom)
         y_dom = rr_dom * np.sin(pp_dom)
 
@@ -187,7 +192,6 @@ class Emulator:
             R = coord["R"]
 
         if "phi" not in coord.keys():
-            print('computing phi')
             phi = np.arctan2(coord["y"], coord["x"])
         else:
             phi = coord["phi"]
@@ -205,31 +209,44 @@ class Emulator:
         if interp_3d == 'SPHERICAL':
             interpolator = get_griddata_sparse((x_dom, y_dom), (r*np.cos(phi), r*np.sin(phi)))
 
-        vphi_interp = (
+        vphi_interp = np.array([
             (
                 interpolator(
-                    v3d_dom[0].reshape(-1)
+                    v3d_dom[i,0].reshape(-1)
                 )
                 * np.sqrt(G * Mstar * u.MSun / R_p)
             )
             * 1e-3 #this is because we use km
-        )
-        vr_interp = (
-            interpolator(v3d_dom[1].reshape(-1))
+            
+        for i in range(v3d_dom.shape[0])])
+        
+        
+        vr_interp = np.array([(
+            interpolator(v3d_dom[i,1].reshape(-1))
             * 1e-3 * np.sqrt(G * Mstar * u.MSun / R_p)
         )
+                              for i in range(v3d_dom.shape[0])])
 
-        mask = (R > 2.9 * R_p) | (R < 0.5 * R_p) | (phi<phi_p-0.3) | (phi>phi_p+0.3)
+        mask = (R > 2.9 * R_p) | (R < 0.5 * R_p)
+
+        mask_ppos = (R > 0.9* R_p) & (R < 1.1* R_p) & (phi<phi_p+0.5) & (phi>phi_p-0.5)
         
-        vphi_interp[mask] = extrap_vfunc(coord, **extrap_kwargs)[mask]
-        vr_interp[mask] = 0
+        vphi_interp[:,mask] = extrap_vfunc(coord, **extrap_kwargs)[mask]
+        vr_interp[:,mask] = 0
         v3d_interp = np.concatenate(
             [
-                np.expand_dims(vphi_interp, axis=0),
-                np.expand_dims(vr_interp, axis=0),
-                -np.zeros((1, *vphi_interp.shape)) * v_sign,
+                np.expand_dims(vphi_interp, axis=1),
+                np.expand_dims(vr_interp, axis=1),
+                np.expand_dims(np.zeros(vphi_interp.shape), axis=1),
             ],
-            axis=0,
+            axis=1,
         )
+
+        if mask_only_ppos:
+            v3d_interp[:,:,~mask_ppos] = np.nan
+
+        if discminer_integr:
+            v3d_interp = v3d_interp[0]
+
 
         return v3d_interp

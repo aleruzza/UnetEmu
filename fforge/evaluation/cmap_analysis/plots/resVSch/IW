@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+
+import matplotlib.pyplot as plt
+import PIL.Image as Image
+import sys
+
+# Load image
+image_path = sys.argv[1] if len(sys.argv) > 1 else "image.jpg"
+image = Image.open(image_path)
+
+# Display image
+plt.imshow(image)
+plt.axis("off")  # Hide axes
+plt.show()
