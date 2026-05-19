@@ -37,7 +37,7 @@
         "velocity": {
             "Mstar": 1.973085,
             "vsys": 5.099463,
-            "vel_sign": -1.0
+            "vel_sign": +1.0
         },
         "orientation": {
             "incl": -0.672928,

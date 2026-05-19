@@ -1,0 +1,101 @@
+{
+    "custom": {
+        "chan_step": 2,
+        "nchans": 15,
+        "vlim": 0.4,
+        "Llim": 0.4,
+        "Ilim": 14,
+        "Lslim": 1.0,
+        "gaps": [
+            0
+        ],
+        "rings": [
+            0
+        ],
+        "kinks": [
+            0
+        ]
+    },
+    "metadata": {
+        "v_discminer": "0.3.9",
+        "disc": "hd163296_prot",
+        "mol": "12co",
+        "kind": [
+            "mask"
+        ],
+        "file_data": "referencecube.fits",
+        "prepare_script": null,
+        "log_file": null,
+        "tag": "",
+        "program": null,
+        "nwalkers": -1,
+        "nsteps": -1,
+        "downsamp_factor": 1,
+        "mol_weight": 28.01,
+        "dpc": 101.5,
+        "bmaj": 0.104,
+        "bmin": 0.094,
+        "bpa": -80.2,
+        "bmaj_au": 10.556,
+        "downsamp": 1,
+        "clipped": false,
+        "npix": 250,
+        "nchan": 22,
+        "wchan": 0.32,
+        "v0": 2.44,
+        "v1": 9.16,
+        "Rmin": 10.556000000000894,
+        "Rmax": 380.0
+    },
+    "best_fit": {
+        "velocity": {
+            "Mstar": 1.97,
+            "vel_sign": 1,
+            "vsys": 5.77
+        },
+        "orientation": {
+            "incl": 0.7977900010866079,
+            "PA": 0.7391469382195985,
+            "xc": 0.0,
+            "yc": 0.0
+        },
+        "intensity": {
+            "I0": 0.3034,
+            "p": -4.16,
+            "q": 3.68,
+            "Rout": 380
+        },
+        "linewidth": {
+            "L0": 0.08,
+            "p": 0.86,
+            "q": -1.38
+        },
+        "lineslope": {
+            "Ls": 1.85,
+            "p": 0.21,
+            "q": 0.0
+        },
+        "height_upper": {
+            "z0": 29.78,
+            "p": 1.21,
+            "Rb": 4.36,
+            "q": 1.98
+        },
+        "height_lower": {
+            "z0": 19.91,
+            "p": 1.09,
+            "Rb": 0.03,
+            "q": 4.18
+        }
+    },
+    "funcs": {
+        "velocity": "keplerian_vertical",
+        "z_upper": "z_upper_powerlaw",
+        "z_lower": "z_lower_powerlaw",
+        "intensity": "intensity_powerlaw_rout",
+        "linewidth": "linewidth_powerlaw",
+        "lineslope": "lineslope_powerlaw",
+        "line_profile": "line_profile_bell",
+        "line_uplow": "line_uplow_mask"
+    }
+}

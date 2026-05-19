@@ -1,0 +1,116 @@
+{
+    "custom": {
+        "chan_step": 4,
+        "nchans": 15,
+        "vlim": 0.2,
+        "Llim": 0.2,
+        "Ilim": 15,
+        "gaps": [
+            76,
+            149
+        ],
+        "rings": [
+            98,
+            165
+        ]
+    },
+    "metadata": {
+        "file_data": "MWC_480_CO_220GHz.robust_0.5.JvMcorr.image.pbcor_clipped_downsamp_2pix.fits",
+        "prepare_script": "../template/prepare_data.py",
+        "log_pars": "../template/log_pars_mwc480_12co_0p2_maps_cube_256walkers_10000steps.txt",
+        "tag": "mwc480_12co_0p2_maps",
+        "disc": "mwc480",
+        "mol": "12co",
+        "dpc": 162.0,
+        "dv": "0p2",
+        "program": "maps",
+        "kind": [
+            "allfree"
+        ],
+        "nwalkers": 256,
+        "nsteps": 10000,
+        "downsamp_pro": 2,
+        "downsamp_fit": 10,
+        "downsamp_factor": 25.0
+    },
+    "best_fit": {
+        "velocity": {
+            "Mstar": 1.973085,
+            "vsys": 5.099463,
+            "vel_sign": -1.0
+        },
+        "orientation": {
+            "incl": -0.672928,
+            "PA": 1.010296,
+            "xc": -0.91338,
+            "yc": -1.826827
+        },
+        "intensity": {
+            "I0": 2.61,
+            "p": -2.659016,
+            "q": 2.156254,
+            "Rout": 717.971915
+        },
+        "linewidth": {
+            "L0": 0.316459,
+            "p": -0.288951,
+            "q": -0.355926
+        },
+        "lineslope": {
+            "Ls": 1.676401,
+            "p": 0.314061
+        },
+        "height_upper": {
+            "z0": 52.680114,
+            "p": 1.65208,
+            "Rb": 108.607483,
+            "q": 0.550336
+        },
+        "height_lower": {
+            "z0": 14.227028,
+            "p": 1.107099,
+            "Rb": 803.90594,
+            "q": 2.859784
+        }
+    },
+    "units": {
+        "velocity": {
+            "Mstar": "Msun",
+            "vsys": "km/s",
+            "vel_sign": "none"
+        },
+        "orientation": {
+            "incl": "rad",
+            "PA": "rad",
+            "xc": "au",
+            "yc": "au"
+        },
+        "intensity": {
+            "I0": "Jy/pix",
+            "p": "none",
+            "q": "none",
+            "Rout": "au"
+        },
+        "linewidth": {
+            "L0": "km/s",
+            "p": "none",
+            "q": "none"
+        },
+        "lineslope": {
+            "Ls": "none",
+            "p": "none"
+        },
+        "height_upper": {
+            "z0": "au",
+            "p": "none",
+            "Rb": "au",
+            "q": "none"
+        },
+        "height_lower": {
+            "z0": "au",
+            "p": "none",
+            "Rb": "au",
+            "q": "none"
+        }
+    }
+}

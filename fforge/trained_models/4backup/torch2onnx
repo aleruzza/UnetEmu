@@ -1,0 +1,29 @@
+#!/usr/bin/env python3.10
+
+import argparse
+import torch
+from create_model import create_nnmodel
+
+
+parser = argparse.ArgumentParser(description='Converts the saved pytorch models in the ONNX format. \
+    For details on the format and implementation of the conversion please see https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html')
+parser.add_argument('torchout', help='pytorch output file (pth) of the model to convert')
+parser.add_argument('onnxout',  help='onnx output file (pth) for the converted model', default='output.onnx')
+parser.add_argument('--mode',dest='mode',
+                    help='mode of the UNet', default='128x128_disc')
+
+
+args = parser.parse_args()
+
+emulator = create_nnmodel(5, 128, mode=args.mode)
+data = torch.load(args.torchout,  map_location=torch.device('cpu'))
+emulator.load_state_dict(data)
+
+torch_input_ic = torch.randn(1, 1, 128, 128)
+torch_input_p = torch.rand(1,5)
+onnx_program = torch.onnx.export(emulator, (torch_input_ic, torch_input_p), args.onnxout,
+                                 input_names = ['input_ic', 'input_par'],   # the model's input names
+                  output_names = ['output'], # the model's output names
+                  dynamic_axes={'input_ic' : {0 : 'batch_size'},    
+                                'input_par' : {0 : 'batch_size'}, # variable length axes
+                                'output' : {0 : 'batch_size'}})

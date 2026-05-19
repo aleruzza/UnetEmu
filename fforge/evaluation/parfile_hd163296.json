@@ -1,0 +1,117 @@
+{
+    "custom": {
+        "chan_step": 4,
+        "nchans": 15,
+        "vlim": 0.2,
+        "Llim": 0.2,
+        "Ilim": 15,
+        "gaps": [
+            76,
+            149
+        ],
+        "rings": [
+            98,
+            165
+        ]
+    },
+    "metadata": {
+        "file_data": "HD163296_CO.fits",
+        "prepare_script": "",
+        "log_pars": "",
+        "tag": "hd163296_prot",
+        "disc": "hd163296",
+        "mol": "12co",
+        "dpc": 101.5,
+        "dv": "0p2",
+        "program": "maps",
+        "kind": [
+            "allfree"
+        ],
+        "nwalkers": 256,
+        "nsteps": 10000,
+        "downsamp_pro": 2,
+        "downsamp_fit": 10,
+        "downsamp_factor": 25.0
+    },
+    "best_fit": {
+        "velocity": {
+                "Mstar": 2.02,
+                "vel_sign": 1,
+                "vsys": 0
+            },
+            "orientation": {
+                "incl": 0.79779,
+                "PA": 5.4515,
+                "xc": 0.0,
+                "yc": 0.0
+            },
+            "intensity": {
+                "I0": 8.23,
+                "p": -4.16, 
+                "q": 3.68,
+                "Rout": 380
+            },
+            "linewidth": {
+                "L0": 0.08, 
+                "p": 0.86, 
+                "q": -1.38
+            }, 
+            "lineslope": {
+                "Ls": 1.85, 
+                "p": 0.21, 
+                "q": 0.0
+            },
+            "height_upper": {
+                "z0": 29.78,
+                "p": 1.21,
+                "Rb": 4.36,
+                "q": 1.98
+            },
+            "height_lower": {
+                "z0": 19.91,
+                "p": 1.09,
+                "Rb": 0.03,
+                "q": 4.18
+            }
+    },
+    "units": {
+        "velocity": {
+            "Mstar": "Msun",
+            "vsys": "km/s",
+            "vel_sign": "none"
+        },
+        "orientation": {
+            "incl": "rad",
+            "PA": "rad",
+            "xc": "au",
+            "yc": "au"
+        },
+        "intensity": {
+            "I0": "Jy/pix",
+            "p": "none",
+            "q": "none",
+            "Rout": "au"
+        },
+        "linewidth": {
+            "L0": "km/s",
+            "p": "none",
+            "q": "none"
+        },
+        "lineslope": {
+            "Ls": "none",
+            "p": "none"
+        },
+        "height_upper": {
+            "z0": "au",
+            "p": "none",
+            "Rb": "au",
+            "q": "none"
+        },
+        "height_lower": {
+            "z0": "au",
+            "p": "none",
+            "Rb": "au",
+            "q": "none"
+        }
+    }
+}

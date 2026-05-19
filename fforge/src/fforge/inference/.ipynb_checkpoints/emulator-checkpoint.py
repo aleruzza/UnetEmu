@@ -25,6 +25,8 @@ class BaseEmulator:
         dataem = torch.load(model_pth, map_location=torch.device(self.device))
         self.emulator.load_state_dict(dataem)
         self.norm_func = norm_func if norm_func is not None else lambda value: value
+        del self.params['norm']
+        del self.params['norm_labels']
 
     def emulate(self, ic, labels):
         labels = torch.tensor(labels, dtype=torch.float32, device=self.device)
@@ -104,7 +106,7 @@ class Emulator:
                 result_sing = result_sing.flip(-2)
             result.append(result_sing)
                 
-        return torch.concatenate(result, axis=1) #(N, fields, NX, NY)
+        return torch.concatenate(result, axis=1) #(N, fields, NY, NX)
 
 
     def emulate_dens(self, alpha, h, planetMass, sigmaSlope, flaringIndex):
