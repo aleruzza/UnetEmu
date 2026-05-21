@@ -17,7 +17,7 @@
         ]
     },
     "metadata": {
-        "v_discminer": "0.3.9",
+        "v_discminer": "0.4.26",
         "disc": "hd163296_prot",
         "mol": "12co",
         "kind": [
@@ -45,7 +45,8 @@
         "v0": 2.44,
         "v1": 9.16,
         "Rmin": 10.556000000000894,
-        "Rmax": 380.0
+        "Rmax": 380.0,
+        "kind": "surf2pwl"
     },
     "best_fit": {
         "velocity": {
@@ -86,6 +87,11 @@
             "p": 1.09,
             "Rb": 0.03,
             "q": 4.18
+        },
+        "beam": {
+            "bmaj": null,
+            "bmin": null,
+            "bpa": null
         }
     },
     "funcs": {

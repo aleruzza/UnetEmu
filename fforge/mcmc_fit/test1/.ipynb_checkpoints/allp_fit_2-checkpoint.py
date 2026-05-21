@@ -1,8 +1,3 @@
-import torch
-torch.multiprocessing.set_sharing_strategy('file_system')
-import resource
-soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-resource.setrlimit(resource.RLIMIT_NOFILE, (hard, hard))
 import numpy as np
 import matplotlib.pyplot as plt
 import emcee
@@ -12,13 +7,17 @@ from argparse import ArgumentParser
 from fforge.inference.emulator import Emulator
 from fforge.utils.utils import generate_ict_128x128_disc_tri_slopes, nullv
 import fforge.utils.units as u
+from fforge.utils.utils import hypot_func
 
+#this is needed to use torch in multithreading. Additionally, in discminer one should substitute the following lines:
+#  'from multiprocessing import Pool' --> 'from multiprocessing.pool import ThreadPool as Pool'
 import multiprocessing
-multiprocessing.set_start_method('fork', force=True)
+multiprocessing.set_start_method("spawn", force=True)
 
-#import multiprocessing
-#multiprocessing.set_start_method('spawn', force=True)
+import torch
 
+
+#useful to have these functions here to avoid problems with pickling
 def vr_norm(data):
     return data * 1e-2
 
@@ -40,46 +39,15 @@ def deep_update(d, u):
 
 parser = ArgumentParser(prog='Handle emcee backend', description='Handle emcee backend')
 parser.add_argument('-b', '--backend', default=0, type=int, choices=[0, 1], help="If 0, create new backend. If 1, reuse existing backend")
+parser.add_argument('--tag-out', default='out', type=string, help='tag that will be used in the output filenames')
+parser.add_argument('-p', '--parfile', default='parfile.json', type=string, help='discminer parfile of the disk to fit, the model defined by it will be fitted to the data changing only the velocity field')
+parser.add_argument('-w', '--n-walkers', default=32, type=int, help='Number of walkers to use in the mcmc fit')
+parser.add_argument('-s', '--n-steps', default=32, type=int, help='Number of steps to do in the mcmc fit')
+parser.add_argument('-c', '--n-threads', default=None, type=int, help='Number of threads, default is the maximum available')
 args = parser.parse_args()
 
-
-#*********************
-#REQUIRED DEFINITIONS
-#*********************
-
-#data
-tag_out = 'test1' #PREFERRED FORMAT: disc_mol_chan_program_extratags
-parfile = 'parfile.json'
-tag_in = tag_out
-
-#emulator settings
-#setup emulator
-labels = ["vphi", "vr"]
-pths = [
-    "../../trained_models/vphi_256/model__epoch_1980_test_vaz_256.pth",
-    "../../trained_models/vr_256/model__epoch_1980_test_vr_256.pth",
-]
-params = [
-    "../../trained_models/vphi_256/params.py",
-    "../../trained_models/vr_256/params.py",
-]
-
-#functions used to denormalize the emulator output
-norm_funcs = [vaz_norm, vr_norm]
-
-emu = Emulator(
-    model_pths=pths,
-    labels=["vphi", "vr"],
-    model_params=params,
-    norm_funcs=norm_funcs,
-    ict_gen=generate_ict_128x128_disc_tri_slopes,
-)
-
-#mcmc fit settings
-nwalkers = 6
-nsteps = 15000
-
-#set parameters to fit
+#######################################################################################################################
+# SET PARAMETERS TO FIT
 #initial guesses
 alpha = 0 #1e-3
 h = 0.49  #0.05
@@ -117,13 +85,40 @@ mc_boundaries = {
 } 
 
 #noise for fit likelihood
-noise = 6.2e-3
+noise = 'auto'#6.2e-3
+fit_normalized_values = True
+extrapolation_vfunc = nullv
+########################################################################################################################
 
-#****************************
-#INIT MODEL AND PRESCRIPTIONS
-#****************************
+#data
+tag_out = args.tag_out #PREFERRED FORMAT: disc_mol_chan_program_extratags
+parfile = args.parfile
+tag_in = tag_out
 
-#setup emulator
+###emulator
+#setup and load the emulator. This is the last version.
+labels = ["vphi", "vr"]
+pths = [
+    "../../trained_models/vphi_256/model__epoch_1980_test_vaz_256.pth",
+    "../../trained_models/vr_256/model__epoch_1980_test_vr_256.pth",
+]
+params = [
+    "../../trained_models/vphi_256/params.py",
+    "../../trained_models/vr_256/params.py",
+]
+#functions used to denormalize the emulator output
+norm_funcs = [vaz_norm, vr_norm]
+emu = Emulator(
+    model_pths=pths,
+    labels=["vphi", "vr"],
+    model_params=params,
+    norm_funcs=norm_funcs,
+    ict_gen=generate_ict_128x128_disc_tri_slopes,
+)
+
+#mcmc fit settings
+nwalkers = args.n_walkers
+nsteps = args.n_steps
 
 # setup discminer
 #init_discminer
@@ -133,14 +128,10 @@ datacube, model = init_data_and_model(
     parfile='parfile.par',
 )
 model.prototype = False
-
 model.velocity_func = emu.emulate_v3d
-
 vchannels = model.vchannels
-
-model.params['velocity']['norm'] = False
-model.params['velocity']['extrap_vfunc'] = nullv
-
+model.params['velocity']['norm'] = not fit_normalized_values
+model.params['velocity']['extrap_vfunc'] = extrapolation_vfunc
 model.mc_params = copy.deepcopy(model.params)
 deep_update(model.mc_params, mc_params)
 model.mc_boundaries.update(mc_boundaries)
@@ -163,16 +154,15 @@ else:
     backend.reset(nwalkers, len(p0))
     
 # Noise in each pixel is stddev of intensity from first and last 5 channels 
-#noise = np.std( np.append(datacube.data[:5,:,:], datacube.data[-5:,:,:], axis=0), axis=0) 
+if noise=='auto':
+    noise = np.std( np.append(datacube.data[:5,:,:], datacube.data[-5:,:,:], axis=0), axis=0) 
 
 #Run Emcee
-import emcee
-
 model.run_mcmc(datacube.data, vchannels,
                p0_mean=p0, nwalkers=nwalkers, nsteps=nsteps,
                backend=backend,
                tag=tag_out,
-               nthreads=1, # If not specified considers maximum possible number of cores
+               nthreads=args.n_threads, # If not specified considers maximum possible number of cores
                frac_stats=0.1,
                frac_stddev=0.1,
                noise_stddev=noise) 
@@ -181,6 +171,7 @@ print("Backend Final size: {0} steps".format(backend.iteration))
 
 #***************************************
 #SAVE SEEDING, BEST FIT PARS, AND ERRORS
+vel_sign = model.params['velocity']['vel_sign']
 model.mc_header.append('vel_sign')
 np.savetxt('log_pars_%s_cube_%dwalkers_%dsteps.txt'%(tag_out, nwalkers, backend.iteration), 
            np.array([np.append(p0, vel_sign),

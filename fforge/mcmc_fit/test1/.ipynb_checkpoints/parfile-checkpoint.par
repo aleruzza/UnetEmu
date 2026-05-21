@@ -45,7 +45,8 @@
         "v0": 2.44,
         "v1": 9.16,
         "Rmin": 10.556000000000894,
-        "Rmax": 380.0
+        "Rmax": 380.0,
+         "kind": "surf2pwl"
     },
     "best_fit": {
         "velocity": {
