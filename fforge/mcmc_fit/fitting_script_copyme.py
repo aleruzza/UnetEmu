@@ -39,8 +39,8 @@ def deep_update(d, u):
 
 parser = ArgumentParser(prog='Handle emcee backend', description='Handle emcee backend')
 parser.add_argument('-b', '--backend', default=0, type=int, choices=[0, 1], help="If 0, create new backend. If 1, reuse existing backend")
-parser.add_argument('--tag-out', default='out', type=string, help='tag that will be used in the output filenames')
-parser.add_argument('-p', '--parfile', default='parfile.json', type=string, help='discminer parfile of the disk to fit, the model defined by it will be fitted to the data changing only the velocity field')
+parser.add_argument('--tag-out', default='out', type=str, help='tag that will be used in the output filenames')
+parser.add_argument('-p', '--parfile', default='parfile.json', type=str, help='discminer parfile of the disk to fit, the model defined by it will be fitted to the data changing only the velocity field')
 parser.add_argument('-w', '--n-walkers', default=32, type=int, help='Number of walkers to use in the mcmc fit')
 parser.add_argument('-s', '--n-steps', default=32, type=int, help='Number of steps to do in the mcmc fit')
 parser.add_argument('-c', '--n-threads', default=None, type=int, help='Number of threads, default is the maximum available')
@@ -56,7 +56,8 @@ sigma = -0.03 #1
 fi = -0.03 #0.2
 rp = 261*u.au #au
 phip = 57*np.pi/180
-p0 = [h, mp, fi]
+log_emu_unc = -3.0
+p0 = [h, mp, fi, log_emu_unc]
 
 mc_params = {
     'velocity': 
@@ -68,6 +69,10 @@ mc_params = {
         'flaringIndex': True,
         'R_p': rp,
         'phi_p': phip
+    },
+    'likelihood':
+    {
+        'log_emu_unc': True
     }
 }
 
@@ -81,6 +86,10 @@ mc_boundaries = {
         'flaringIndex': (-1, 1),
         'R_p': rp,#(300*u.au, 500*u.au),
         'phi_p': phip, #(-np.pi, np.pi)
+    },
+    'likelihood':
+    {
+        'log_emu_unc': (-3.,0.)
     }
 } 
 
@@ -156,6 +165,10 @@ else:
 # Noise in each pixel is stddev of intensity from first and last 5 channels 
 if noise=='auto':
     noise = np.std( np.append(datacube.data[:5,:,:], datacube.data[-5:,:,:], axis=0), axis=0) 
+
+#set the custom likelihood to fit unc
+from custom_likelihood import custom_ln_likelihood
+model.ln_likelihood = custom_ln_likelihood.__get__(model)
 
 #Run Emcee
 model.run_mcmc(datacube.data, vchannels,
