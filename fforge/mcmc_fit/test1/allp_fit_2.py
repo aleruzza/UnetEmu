@@ -39,8 +39,8 @@ def deep_update(d, u):
 
 parser = ArgumentParser(prog='Handle emcee backend', description='Handle emcee backend')
 parser.add_argument('-b', '--backend', default=0, type=int, choices=[0, 1], help="If 0, create new backend. If 1, reuse existing backend")
-parser.add_argument('--tag-out', default='out', type=string, help='tag that will be used in the output filenames')
-parser.add_argument('-p', '--parfile', default='parfile.json', type=string, help='discminer parfile of the disk to fit, the model defined by it will be fitted to the data changing only the velocity field')
+parser.add_argument('--tag-out', default='out', type=str, help='tag that will be used in the output filenames')
+parser.add_argument('-p', '--parfile', default='parfile.json', type=str, help='discminer parfile of the disk to fit, the model defined by it will be fitted to the data changing only the velocity field')
 parser.add_argument('-w', '--n-walkers', default=32, type=int, help='Number of walkers to use in the mcmc fit')
 parser.add_argument('-s', '--n-steps', default=32, type=int, help='Number of steps to do in the mcmc fit')
 parser.add_argument('-c', '--n-threads', default=None, type=int, help='Number of threads, default is the maximum available')
