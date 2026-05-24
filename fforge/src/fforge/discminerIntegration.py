@@ -11,6 +11,94 @@ class customDiscminerModel(Model):
     def __init_extra__(self, *args, **kwargs):
         self.first_makemodel = True
 
+    def populate(self, data=None, vchannels=None, p0_mean=[],
+                 z_mirror=False,
+                 frac_stddev=0.1,
+                 **kwargs_model): 
+        """
+        Optimise the discminer model parameters using an MCMC sampler.
+
+        Parameters
+        __________
+        data : array_like with shape (nchan, nx, nx), optional
+            Reference intensity data to be modelled. If not specified, discminer considers the 
+            *data* attribute of the original datacube with which the model was initialised.
+        
+        vchannels : array_like with shape (nchan,), optional
+            Reference velocity channels matching the velocity axis of the input data. If not specified, discminer
+            considers the velocity channels of the datacube that was used to initialise the model.
+
+        p0_mean : array_like with shape (npars,)
+            Mean value of initial-guess parameters. These will be sampled assuming a normal distribution.
+
+        frac_stddev : float or array_like with shape (npars,), optional
+            Fraction of the parameter range extent that will be considered as the standard deviation of the normal distribution of initial-guess parameters.
+        
+        frac_stats : float
+            Fraction of MCMC steps at the end of the parameter chains considered for the computation of best-fit parameters (Defaults to 0.2, i.e. 20).
+       
+        """        
+        if data is None and vchannels is None:
+            self.mc_data = self.datacube.data
+            self.mc_vchannels = self.vchannels
+        elif data is not None and vchannels is not None:
+            self.mc_data = data
+            self.mc_vchannels = vchannels
+        else:
+            raise InputError((data, vchannels),
+                             'Please specify both data AND vchannel slices you wish to consider for the MCMC sampling.')
+            
+        self.mc_nchan = len(vchannels)
+        self.noise_stddev = noise_stddev
+        if use_zeus: import zeus as sampler_id
+        else: import emcee as sampler_id
+            
+        kwargs_model.update({'z_mirror': z_mirror})
+        if z_mirror: 
+            for key in self.mc_params['height_lower']: self.mc_params['height_lower'][key] = 'height_upper_mirror'
+        self.mc_header, self.mc_kind, self.mc_nparams, self.mc_boundaries_list, self.mc_params_indices = Model._get_params2fit(self.mc_params, self.mc_boundaries)
+        self.params = copy.deepcopy(self.mc_params)
+
+        if isinstance(p0_mean, (list, tuple, np.ndarray)): 
+            if len(p0_mean) != self.mc_nparams: raise InputError(p0_mean, 'Length of input p0_mean must be equal to the number of parameters to fit: %d'%self.mc_nparams)
+            else: pass
+
+        nstats = int(round(frac_stats*(nsteps-1)))
+        ndim = self.mc_nparams
+
+        p0_stddev = [frac_stddev*(self.mc_boundaries_list[i][1] - self.mc_boundaries_list[i][0]) for i in range(self.mc_nparams)]
+        p0 = np.random.normal(loc=p0_mean,
+                              scale=p0_stddev,
+                              size=(nwalkers, ndim)
+                              )
+
+        _break_line()
+        print ('Initialising MCMC routines with the following (%d) parameters:\n'%self.mc_nparams)
+        if found_termtables:
+            bound_left, bound_right = np.array(self.mc_boundaries_list).T
+            tt_header = ['Attribute', 'Parameter', 'Mean initial guess', 'Par stddev', 'Lower bound', 'Upper bound']
+            tt_data = np.array([self.mc_kind, self.mc_header, p0_mean, p0_stddev, bound_left, bound_right]).T
+            termtables.print(
+                tt_data,
+                header=tt_header,
+                style=termtables.styles.markdown,
+                padding=(0, 1),
+                alignment="lcllll"
+                )
+        else:
+            print ('Parameter header set for mcmc model fitting:', self.mc_header)
+            print ('Parameters to fit and fixed parameters:')
+            pprint.pprint(self.mc_params)
+            print ('Number of mc parameters:', self.mc_nparams)
+            print ('Parameter attributes:', self.mc_kind)
+            print ('Parameter boundaries:')
+            pprint.pprint(self.mc_boundaries_list)
+            print ('Mean for initial guess p0:', p0_mean)
+            print ('p0 pars stddev:', p0_stddev)
+        _break_line(init='\n', end='\n\n')
+        self.make_model()
+
+
     def make_model(self, z_mirror=False, **kwargs_line_profile):  
 
         if self.first_makemodel:
