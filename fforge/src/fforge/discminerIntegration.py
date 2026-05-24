@@ -8,8 +8,7 @@ from discminer.disc2d import *
 
 def customDiscminerModel(Model):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init_extra__(self, *args, **kwargs):
         self.first_makemodel = True
 
     def make_model(self, **kwargs):
