@@ -8,6 +8,7 @@ from fforge.inference.emulator import Emulator
 from fforge.utils.utils import generate_ict_128x128_disc_tri_slopes, nullv
 import fforge.utils.units as u
 from fforge.utils.utils import hypot_func
+from fforge.discminerIntegration import customDiscminerModel
 
 #this is needed to use torch in multithreading. Additionally, in discminer one should substitute the following lines:
 #  'from multiprocessing import Pool' --> 'from multiprocessing.pool import ThreadPool as Pool'
@@ -49,7 +50,7 @@ args = parser.parse_args()
 #######################################################################################################################
 # SET PARAMETERS TO FIT
 #initial guesses
-alpha = 0 #1e-3
+alpha = 1 #1e-3
 h = 0.49  #0.05
 mp = 0.57 #1e-3
 sigma = -0.03 #1
@@ -167,8 +168,11 @@ if noise=='auto':
     noise = np.std( np.append(datacube.data[:5,:,:], datacube.data[-5:,:,:], axis=0), axis=0) 
 
 #set the custom likelihood to fit unc
-from custom_likelihood import custom_ln_likelihood
+from fforge.discminerIntegration import custom_ln_likelihood
 model.ln_likelihood = custom_ln_likelihood.__get__(model)
+
+model.__class__ = customDiscminerModel
+model.__init_extra__()
 
 #Run Emcee
 model.run_mcmc(datacube.data, vchannels,
