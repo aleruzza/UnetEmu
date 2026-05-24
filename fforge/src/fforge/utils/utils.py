@@ -70,6 +70,9 @@ def generate_ict_128x128_disc(slopes, dimension, nonorm=False):
 
 
 def norm_labels(labels):
+'''
+Normalization is between -1 and 1, and is done in log space for PlanetMass and Alpha, which span several orders of magnitude. The other two parameters are normalized linearly.
+'''
     # ['PlanetMass', 'AspectRatio', 'Alpha',  'FlaringIndex']
     max = np.array([1e-2, 0.1, 0.01, 0.35])
     min = np.array([1e-5, 0.03, 1e-4, 0])

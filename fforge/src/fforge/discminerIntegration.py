@@ -11,7 +11,7 @@ class customDiscminerModel(Model):
     def __init_extra__(self, *args, **kwargs):
         self.first_makemodel = True
 
-    def make_model(self, **kwargs):
+    def make_model(self, z_mirror=False, **kwargs_line_profile):  
 
         if self.first_makemodel:
             self.first_makemodel = False

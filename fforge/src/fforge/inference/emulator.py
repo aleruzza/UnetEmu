@@ -136,9 +136,7 @@ class Emulator:
         phi_p,
         extrap_vfunc,
         sigmaSlope=None,
-        norm=True,
-        interp_3d='SPHERICAL',
-        discminer_integr = True,
+        norm=True, #True means that the parameters are not normalized to the range [0,1] and need to be.
         mask_only_ppos = False,
         **extrap_kwargs,
     ):
