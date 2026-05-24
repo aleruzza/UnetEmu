@@ -6,6 +6,21 @@ import copy
 from discminer.disc2d import *
 from discminer.tools.utils import FrontendUtils
 
+
+__all__ = ['Model', 'Mcmc', 'Velocity', 'Intensity', 'Linewidth', 'Lineslope', 'ScaleHeight', 'SurfaceDensity', 'Temperature']
+
+try: 
+    import termtables
+    found_termtables = True
+except ImportError:
+    print ("\n*** For nicer outputs we recommend installing 'termtables' by typing in terminal: pip install termtables ***")
+    found_termtables = False
+
+_break_line = FrontendUtils._break_line
+
+SMALL_SIZE = 10
+MEDIUM_SIZE = 15
+
 class customDiscminerModel(Model):
 
     def __init_extra__(self, *args, **kwargs):
