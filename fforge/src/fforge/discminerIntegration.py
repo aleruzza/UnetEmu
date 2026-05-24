@@ -6,7 +6,7 @@ import copy
 from discminer.disc2d import *
 
 
-def customDiscminerModel(Model):
+class customDiscminerModel(Model):
 
     def __init_extra__(self, *args, **kwargs):
         self.first_makemodel = True
