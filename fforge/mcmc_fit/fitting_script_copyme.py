@@ -173,7 +173,8 @@ model.ln_likelihood = custom_ln_likelihood.__get__(model)
 
 model.__class__ = customDiscminerModel
 model.__init_extra__()
-model.make_model()
+model.populate(datacube.data, vchannels,
+               p0_mean=p0)
 
 #Run Emcee
 model.run_mcmc(datacube.data, vchannels,
