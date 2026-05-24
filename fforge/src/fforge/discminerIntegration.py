@@ -49,8 +49,6 @@ class customDiscminerModel(Model):
                              'Please specify both data AND vchannel slices you wish to consider for the MCMC sampling.')
             
         self.mc_nchan = len(vchannels)
-        if use_zeus: import zeus as sampler_id
-        else: import emcee as sampler_id
             
         kwargs_model.update({'z_mirror': z_mirror})
         if z_mirror: 
@@ -62,14 +60,9 @@ class customDiscminerModel(Model):
             if len(p0_mean) != self.mc_nparams: raise InputError(p0_mean, 'Length of input p0_mean must be equal to the number of parameters to fit: %d'%self.mc_nparams)
             else: pass
 
-        nstats = int(round(frac_stats*(nsteps-1)))
         ndim = self.mc_nparams
 
         p0_stddev = [frac_stddev*(self.mc_boundaries_list[i][1] - self.mc_boundaries_list[i][0]) for i in range(self.mc_nparams)]
-        p0 = np.random.normal(loc=p0_mean,
-                              scale=p0_stddev,
-                              size=(nwalkers, ndim)
-                              )
 
         _break_line()
         print ('Initialising MCMC routines with the following (%d) parameters:\n'%self.mc_nparams)
@@ -95,7 +88,7 @@ class customDiscminerModel(Model):
             print ('Mean for initial guess p0:', p0_mean)
             print ('p0 pars stddev:', p0_stddev)
         _break_line(init='\n', end='\n\n')
-        self.make_model()
+        self.ln_likelihood(p0_mean)
 
 
     def make_model(self, z_mirror=False, **kwargs_line_profile):  
