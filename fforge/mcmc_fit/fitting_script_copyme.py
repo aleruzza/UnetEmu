@@ -173,9 +173,8 @@ model.ln_likelihood = custom_ln_likelihood.__get__(model)
 
 model.__class__ = customDiscminerModel
 model.__init_extra__()
-model.make_model(incl=model.params['geometry']['incl'],
-                 psi=model.params['geometry']['psi'],
-                 PA=model.params['geometry']['PA'])
+model.make_model()
+
 #Run Emcee
 model.run_mcmc(datacube.data, vchannels,
                p0_mean=p0, nwalkers=nwalkers, nsteps=nsteps,
