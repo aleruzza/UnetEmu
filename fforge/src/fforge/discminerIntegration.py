@@ -4,7 +4,7 @@ import numbers
 from discminer.diff_interp import get_griddata_sparse as get_griddata
 import copy
 from discminer.disc2d import *
-
+from discminer.tools.utils import FrontendUtils
 
 class customDiscminerModel(Model):
 
@@ -38,6 +38,8 @@ class customDiscminerModel(Model):
             Fraction of MCMC steps at the end of the parameter chains considered for the computation of best-fit parameters (Defaults to 0.2, i.e. 20).
        
         """        
+
+        _break_line = FrontendUtils._break_line
         if data is None and vchannels is None:
             self.mc_data = self.datacube.data
             self.mc_vchannels = self.vchannels
@@ -92,14 +94,15 @@ class customDiscminerModel(Model):
 
 
     def make_model(self, z_mirror=False, **kwargs_line_profile):  
+        _break_line = FrontendUtils._break_line
 
         if self.first_makemodel:
             self.first_makemodel = False
             if self.prototype and self.verbose: 
-                break_line()
+                _break_line()
                 print ('Running prototype model with the following parameters:\n')
                 pprint.pprint(self.params)
-                break_line(init='\n')
+                _break_line(init='\n')
 
             incl, PA, xc, yc = self.orientation_func({'R': self.R_true}, **self.params['orientation'])
             int_kwargs = self.params['intensity']
