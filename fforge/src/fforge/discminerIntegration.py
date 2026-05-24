@@ -49,7 +49,6 @@ class customDiscminerModel(Model):
                              'Please specify both data AND vchannel slices you wish to consider for the MCMC sampling.')
             
         self.mc_nchan = len(vchannels)
-        self.noise_stddev = noise_stddev
         if use_zeus: import zeus as sampler_id
         else: import emcee as sampler_id
             
