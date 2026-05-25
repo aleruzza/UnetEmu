@@ -160,7 +160,7 @@ if noise=='auto':
 #Run Emcee
 model.run_mcmc(datacube.data, vchannels,
                p0_mean=p0, nwalkers=nwalkers, nsteps=nsteps,
-               backend=backend,
+               backend=backend, 
                tag=tag_out,
                nthreads=args.n_threads, # If not specified considers maximum possible number of cores
                frac_stats=0.1,

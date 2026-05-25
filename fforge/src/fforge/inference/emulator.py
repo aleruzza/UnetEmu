@@ -138,6 +138,8 @@ class Emulator:
         sigmaSlope=None,
         norm=True, #True means that the parameters are not normalized to the range [0,1] and need to be.
         mask_only_ppos = False,
+        interp_3d = 'SPHERICAL',
+        discminer_integr = True,
         **extrap_kwargs,
     ):
 
