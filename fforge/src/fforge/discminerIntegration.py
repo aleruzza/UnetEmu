@@ -54,6 +54,8 @@ class customDiscminerModel(Model):
        
         """        
 
+        self.noise_stddev = 1.0
+
         _break_line = FrontendUtils._break_line
         if data is None and vchannels is None:
             self.mc_data = self.datacube.data
