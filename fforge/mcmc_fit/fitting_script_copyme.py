@@ -9,7 +9,7 @@ from fforge.utils.utils import generate_ict_128x128_disc_tri_slopes, nullv
 import fforge.utils.units as u
 from fforge.utils.utils import hypot_func
 from fforge.discminerIntegration import customDiscminerModel
-from discminer.tools.utils import FrontendUtils
+
 
 #this is needed to use torch in multithreading. Additionally, in discminer one should substitute the following lines:
 #  'from multiprocessing import Pool' --> 'from multiprocessing.pool import ThreadPool as Pool'
@@ -58,7 +58,7 @@ sigma = -0.03 #1
 fi = -0.03 #0.2
 rp = 261*u.au #au
 phip = 57*np.pi/180
-log_emu_unc = -3.0
+log_emu_unc = -2.0
 p0 = [h, mp, fi, log_emu_unc]
 
 mc_params = {
