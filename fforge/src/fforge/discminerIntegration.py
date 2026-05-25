@@ -144,9 +144,9 @@ class customDiscminerModel(Model):
                 else: z_far_1d = self.z_lower_func({'R': self.R_1d*sfu.au}, **self.params['height_lower'])/sfu.au
             else: z_1d = z_far_1d = None
 
-            grid_true = {'upper': [self.x_true, self.y_true, z_true, self.R_true, self.phi_true, self.R_1d, z_1d], 
+            self.grid_true = {'upper': [self.x_true, self.y_true, z_true, self.R_true, self.phi_true, self.R_1d, z_1d], 
                         'lower': [self.x_true, self.y_true, z_true_far, self.R_true, self.phi_true, self.R_1d, z_far_1d]}
-            self.grid_true = grid_true
+            grid_true = self.grid_true
             #******************************
             #COMPUTE PROPERTIES ON SKY GRID 
             avai_kwargs = [vel_kwargs, int_kwargs, lw_kwargs, ls_kwargs]
