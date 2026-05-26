@@ -297,19 +297,19 @@ class customDiscminerModel(Model):
 
             #***********************************
             #PROJECT PROPERTIES ON THE SKY PLANE        
+            for side in ['upper', 'lower']:
+                if self.subpixels:
+                    for prop in props:
+                        for i in range(self.subpixels_sq): #Subpixels are projected on the same plane where true grid is projected
+                            if not isinstance(prop[i][side], numbers.Number):
+                                prop[i][side] =  self.gridd_data[side](prop[i][side]) #griddata((x_pro, y_pro), prop[i][side], (self.mesh[0], self.mesh[1]), method='linear')
+                            if self.Rmax_m is not None:
+                                prop[i][side] = np.where(np.logical_and(self.R_grid<self.Rmax_m, self.R_grid>self.Rmin_m), prop[i][side], np.nan)
 
-            if self.subpixels:
-                for prop in props:
-                    for i in range(self.subpixels_sq): #Subpixels are projected on the same plane where true grid is projected
-                        if not isinstance(prop[i][side], numbers.Number):
-                            prop[i][side] =  self.gridd_data[side](prop[i][side]) #griddata((x_pro, y_pro), prop[i][side], (self.mesh[0], self.mesh[1]), method='linear')
-                        if self.Rmax_m is not None:
-                            prop[i][side] = np.where(np.logical_and(self.R_grid<self.Rmax_m, self.R_grid>self.Rmin_m), prop[i][side], np.nan)
-
-            else:
-                for prop in props:
-                    if not isinstance(prop[side], numbers.Number): prop[side] = self.gridd_data[side](prop[side]) #griddata((x_pro, y_pro), prop[side], (self.mesh[0], self.mesh[1]), method='linear')
-                    if self.Rmax_m is not None: prop[side] = np.where(np.logical_and(self.R_grid<self.Rmax_m, self.R_grid>self.Rmin_m), prop[side], np.nan)
+                else:
+                    for prop in props:
+                        if not isinstance(prop[side], numbers.Number): prop[side] = self.gridd_data[side](prop[side]) #griddata((x_pro, y_pro), prop[side], (self.mesh[0], self.mesh[1]), method='linear')
+                        if self.Rmax_m is not None: prop[side] = np.where(np.logical_and(self.R_grid<self.Rmax_m, self.R_grid>self.Rmin_m), prop[side], np.nan)
 
         #*************************************
             if self.prototype:
