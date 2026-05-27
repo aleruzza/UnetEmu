@@ -212,7 +212,11 @@ class Emulator:
             r = coord['r']
             
         if interp_3d == 'SPHERICAL':
-            interpolator = get_griddata_sparse((x_dom, y_dom), (r*np.cos(phi), r*np.sin(phi)))
+            cache_key = (round(float(R_p), 6), round(float(phi_p), 6))
+            if not hasattr(self, '_interp_cache') or self._interp_cache_key != cache_key:
+                self._interp_cache = get_griddata_sparse((x_dom, y_dom), (r*np.cos(phi), r*np.sin(phi)))
+                self._interp_cache_key = cache_key
+            interpolator = self._interp_cache
 
         vphi_interp = np.array([
             (
