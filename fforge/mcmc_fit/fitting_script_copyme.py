@@ -18,17 +18,21 @@ multiprocessing.set_start_method("spawn", force=True)
 
 import torch
 
+torch.set_num_threads(1)
+torch.set_num_interop_threads(1)
 
 #useful to have these functions here to avoid problems with pickling
 def vr_norm(data):
     return data * 1e-2
 
-
+_xy = np.linspace(-3, 3, 256)  # match your grid size
+_xx, _yy = np.meshgrid(_xy, _xy)
+_RR = torch.Tensor(hypot_func(_xx, _yy)**-0.5)
 def vaz_norm(data):
-    xy = np.linspace(-3, 3, data.shape[-1])
-    xx, yy = np.meshgrid(xy, xy)
-    rr = hypot_func(xx, yy)
-    return data * 1e-2 + torch.Tensor(rr)**-0.5
+    #xy = np.linspace(-3, 3, data.shape[-1])
+    #xx, yy = np.meshgrid(xy, xy)
+    #rr = hypot_func(xx, yy)
+    return data * 1e-2 + _RR**-0.5
 
 
 def deep_update(d, u):

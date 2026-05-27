@@ -24,6 +24,8 @@ class BaseEmulator:
         ).to(device=torch.device(self.device))
         dataem = torch.load(model_pth, map_location=torch.device(self.device))
         self.emulator.load_state_dict(dataem)
+        self.emulator.eval()
+        self.emulator = torch.compile(self.emulator)
         self.norm_func = norm_func if norm_func is not None else lambda value: value
         del self.params['norm']
         del self.params['norm_labels']
@@ -31,7 +33,8 @@ class BaseEmulator:
     def emulate(self, ic, labels):
         labels = torch.tensor(labels, dtype=torch.float32, device=self.device)
         ic = torch.tensor(ic, dtype=torch.float32, device=self.device)
-        emulation = self.emulator(ic, labels)
+        with torch.inference_mode():
+            emulation = self.emulator(ic, labels)
         return self.norm_func(emulation)
     
     def __call__(self, ic, labels):
