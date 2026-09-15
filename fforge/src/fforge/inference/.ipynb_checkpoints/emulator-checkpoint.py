@@ -6,11 +6,12 @@ from scipy.interpolate import griddata
 from ..utils import units as u
 from ..utils.utils import hypot_func, load_params, norm_labels, generate_ict_128x128_disc
 from discminer.diff_interp import get_griddata_sparse
-
+import time
 
 class BaseEmulator:
 
     def __init__(self, model_pth="", model_para={}, device="cpu", norm_func=None):
+        torch.set_num_threads(1)
         self.params = model_para
         self.device = device
         self.emulator = create_nnmodel(
@@ -24,6 +25,8 @@ class BaseEmulator:
         ).to(device=torch.device(self.device))
         dataem = torch.load(model_pth, map_location=torch.device(self.device))
         self.emulator.load_state_dict(dataem)
+        self.emulator.eval()
+        self.emulator = torch.compile(self.emulator)
         self.norm_func = norm_func if norm_func is not None else lambda value: value
         del self.params['norm']
         del self.params['norm_labels']
@@ -31,7 +34,8 @@ class BaseEmulator:
     def emulate(self, ic, labels):
         labels = torch.tensor(labels, dtype=torch.float32, device=self.device)
         ic = torch.tensor(ic, dtype=torch.float32, device=self.device)
-        emulation = self.emulator(ic, labels)
+        with torch.inference_mode():
+            emulation = self.emulator(ic, labels)
         return self.norm_func(emulation)
     
     def __call__(self, ic, labels):
@@ -125,6 +129,13 @@ class Emulator:
         t[t < -np.pi] = t[t < -np.pi] + 2 * np.pi
         return t.reshape(*shape)
 
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.pop('_interp_cache', None)
+        return state
+        
+
     def emulate_v3d(
         self,
         coord,
@@ -136,13 +147,14 @@ class Emulator:
         phi_p,
         extrap_vfunc,
         sigmaSlope=None,
-        norm=True,
-        interp_3d='SPHERICAL',
-        discminer_integr = True,
+        norm=True, #True means that the parameters are not normalized to the range [0,1] and need to be.
         mask_only_ppos = False,
+        interp_3d = 'SPHERICAL',
+        discminer_integr = True,
         **extrap_kwargs,
     ):
 
+        #t = time.time()        
         #prepare call to the extrapolation function
         for key, obj in extrap_kwargs.items():
             if callable(obj):
@@ -175,12 +187,19 @@ class Emulator:
             else:
                 #print('using norm=False')
                 sigmaSlope = np.array(flaringIndex)
-            
-        v3d = (
-            self.emulate(alpha, h, planetMass, sigmaSlope, flaringIndex, fields=['vphi', 'vr'], norm=norm, v_sign=vel_sign)
-            .detach()
-            .numpy()
-        )
+
+        # --- EMULATOR CACHE ---
+        emu_cache_key = (round(float(h),6), round(float(planetMass),6), 
+                         round(float(flaringIndex),6), round(float(alpha),6), vel_sign)
+        if not hasattr(self, '_emu_cache') or self._emu_cache_key != emu_cache_key:
+            self._emu_cache = (
+                self.emulate(alpha, h, planetMass, sigmaSlope, flaringIndex, 
+                             fields=['vphi', 'vr'], norm=norm, v_sign=vel_sign)
+                .detach()
+                .numpy()
+            )
+            self._emu_cache_key = emu_cache_key
+        v3d = self._emu_cache
 
         rr_dom = self.rr_dom * R_p
         pp_dom = self.per_b(self.pp_dom + phi_p)
@@ -209,7 +228,11 @@ class Emulator:
             r = coord['r']
             
         if interp_3d == 'SPHERICAL':
-            interpolator = get_griddata_sparse((x_dom, y_dom), (r*np.cos(phi), r*np.sin(phi)))
+            cache_key = (round(float(R_p), 6), round(float(phi_p), 6))
+            if not hasattr(self, '_interp_cache') or self._interp_cache_key != cache_key:
+                self._interp_cache = get_griddata_sparse((x_dom, y_dom), (r*np.cos(phi), r*np.sin(phi)))
+                self._interp_cache_key = cache_key
+            interpolator = self._interp_cache
 
         vphi_interp = np.array([
             (
@@ -250,5 +273,5 @@ class Emulator:
         if discminer_integr:
             v3d_interp = v3d_interp[0]
 
-
+        #print(f'Emulation took {time.time()-t}')
         return v3d_interp

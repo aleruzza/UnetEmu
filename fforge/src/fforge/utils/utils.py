@@ -51,20 +51,21 @@ def generate_ict_128x128_disc_tri(slopes, dimension):
 
 
 def generate_ict_128x128_disc_tri_slopes(slopes, dimension):
-    dens_ict = generate_ict_128x128_disc(slopes, dimension=dimension, nonorm=True)
-    ict = np.concatenate([dens_ict, dens_ict.copy(), dens_ict.copy()], axis=1)
+    dens_ict = generate_ict_128x128_disc(slopes, dimension=dimension)
+    vaz_ict = generate_ict_128x128_disc(slopes, dimension=dimension, vaz=True)
+    ict = np.concatenate([dens_ict, vaz_ict, dens_ict.copy()], axis=1)
     return np.float32(ict)
 
 
-def generate_ict_128x128_disc(slopes, dimension, nonorm=False):
+def generate_ict_128x128_disc(slopes, dimension, vaz=False):
     # generating initial conditions
     x = np.linspace(-3, 3, dimension)
     y = np.linspace(-3, 3, dimension)
     xx, yy = np.meshgrid(x, y)
     r = np.sqrt(xx**2 + yy**2)
     ict = np.float32(r ** (-slopes.reshape(-1, 1, 1)) * ((r < 3) & (r > 0.4)))
-    if not nonorm:
-        ict = np.float32(ict)
+    if vaz:
+        ict = normvaz(np.float32(ict))
     ict = np.expand_dims(ict, axis=1)
     return ict
 
@@ -93,3 +94,12 @@ def vaz_norm(data):
     xx, yy = np.meshgrid(xy, xy)
     rr = hypot_func(xx, yy)
     return data * 1e-2 + torch.Tensor(rr)**-0.5
+
+
+def normvaz(data, scale=1, imagesize=256):                                                
+    xy = np.linspace(-3,3,256)                                                           
+    xx, yy = np.meshgrid(xy, xy)                                                         
+    rr = np.sqrt(xx**2+yy**2)                                                            
+    vaz0 = rr**-0.5                                                                     
+    mask = (rr>0.3) & (rr<3)                                                          
+    return torch.tensor((data-vaz0)*mask/scale, dtype=torch.float32) 

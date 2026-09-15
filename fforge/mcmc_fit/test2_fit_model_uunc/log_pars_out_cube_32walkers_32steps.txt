@@ -1,0 +1,1 @@
+# ['Mstar', 'vel_sign', 'vsys', 'norm', 'extrap_vfunc', 'alpha', 'h', 'planetMass', 'sigmaSlope', 'flaringIndex', 'R_p', 'phi_p', 'incl', 'PA', 'xc', 'yc', 'I0', 'p', 'q', 'Rout', 'L0', 'p', 'q', 'Ls', 'p', 'q', 'z0', 'p', 'Rb', 'q', 'z0', 'p', 'Rb', 'q']

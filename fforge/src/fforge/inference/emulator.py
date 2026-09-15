@@ -6,11 +6,12 @@ from scipy.interpolate import griddata
 from ..utils import units as u
 from ..utils.utils import hypot_func, load_params, norm_labels, generate_ict_128x128_disc
 from discminer.diff_interp import get_griddata_sparse
-
+import time
 
 class BaseEmulator:
 
     def __init__(self, model_pth="", model_para={}, device="cpu", norm_func=None):
+        torch.set_num_threads(1)
         self.params = model_para
         self.device = device
         self.emulator = create_nnmodel(
@@ -50,7 +51,7 @@ class Emulator:
         labels=["dens", "vphi", "vr", "vz"],
         device="cpu",
         ict_gen=generate_ict_128x128_disc,
-        ict_comp_dict = {'dens':0, 'vphi':0 , 'vr': 0},
+        ict_comp_dict = {'dens':0, 'vphi': 1, 'vr': 0},
         norm_funcs = [None, None, None, None]
     ):
         self.device = device
@@ -128,6 +129,13 @@ class Emulator:
         t[t < -np.pi] = t[t < -np.pi] + 2 * np.pi
         return t.reshape(*shape)
 
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.pop('_interp_cache', None)
+        return state
+        
+
     def emulate_v3d(
         self,
         coord,
@@ -146,6 +154,7 @@ class Emulator:
         **extrap_kwargs,
     ):
 
+        #t = time.time()        
         #prepare call to the extrapolation function
         for key, obj in extrap_kwargs.items():
             if callable(obj):
@@ -178,12 +187,19 @@ class Emulator:
             else:
                 #print('using norm=False')
                 sigmaSlope = np.array(flaringIndex)
-            
-        v3d = (
-            self.emulate(alpha, h, planetMass, sigmaSlope, flaringIndex, fields=['vphi', 'vr'], norm=norm, v_sign=vel_sign)
-            .detach()
-            .numpy()
-        )
+
+        # --- EMULATOR CACHE ---
+        emu_cache_key = (round(float(h),6), round(float(planetMass),6), 
+                         round(float(flaringIndex),6), round(float(alpha),6), vel_sign)
+        if not hasattr(self, '_emu_cache') or self._emu_cache_key != emu_cache_key:
+            self._emu_cache = (
+                self.emulate(alpha, h, planetMass, sigmaSlope, flaringIndex, 
+                             fields=['vphi', 'vr'], norm=norm, v_sign=vel_sign)
+                .detach()
+                .numpy()
+            )
+            self._emu_cache_key = emu_cache_key
+        v3d = self._emu_cache
 
         rr_dom = self.rr_dom * R_p
         pp_dom = self.per_b(self.pp_dom + phi_p)
@@ -257,5 +273,5 @@ class Emulator:
         if discminer_integr:
             v3d_interp = v3d_interp[0]
 
-
+        #print(f'Emulation took {time.time()-t}')
         return v3d_interp
