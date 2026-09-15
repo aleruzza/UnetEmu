@@ -93,8 +93,7 @@ def vaz_norm(data):
     xy = np.linspace(-3, 3, data.shape[-1])
     xx, yy = np.meshgrid(xy, xy)
     rr = hypot_func(xx, yy)
-    return data * 1e-2 + torch.Tensor(rr)**-0.5
-
+    return data * 1e-2 + torch.Tensor(rr).to(data.device)**-0.5
 
 def normvaz(data, scale=1, imagesize=256):                                                
     xy = np.linspace(-3,3,256)                                                           
