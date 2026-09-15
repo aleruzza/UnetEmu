@@ -28,6 +28,7 @@ emu = Emulator(
     model_params=params,
     norm_funcs=norm_funcs,
     ict_gen=generate_ict_128x128_disc_tri_slopes,
+    device='mps'
 )
 
 #Case specific parameters. Change to evaluate a different emulator or a different pipeline
@@ -41,7 +42,7 @@ xx, yy = np.meshgrid(xy, xy)
 rr = np.sqrt(xx**2+yy**2)
 phi = np.arctan2(yy, xx)
 
-mask1 = (rr>0.5) & (rr<2)
+mask1 = (rr>0.5) & (rr<2.5)
 mask2 = (rr>0.7) & (rr<1.3) & (phi>-0.2) & (phi<0.2)
 
 from tqdm import tqdm
@@ -53,18 +54,22 @@ mse_varp = {'Alpha': [], 'PlanetMass': [], 'AspectRatio': []}
 for i in tqdm(range(len(testparams))):
     row = testparams.iloc[i]
     emu_params = {}
-    for varied_par in parameters:
+    for varied_par in tqdm(parameters, desc='par'):
         for par in ['Alpha', 'PlanetMass', 'AspectRatio', 'SigmaSlope', 'FlaringIndex']:
             if par == varied_par:
                 emu_params[par] = grids[par]
             else:
                 emu_params[par] = np.ones(100)*row[par]
-        all_emulations_vp = emu.emulate(alpha=emu_params['Alpha'],
-                                        h=emu_params['AspectRatio'],
-                                        planetMass=emu_params['PlanetMass'],
-                                        sigmaSlope=emu_params['SigmaSlope'],
-                                        flaringIndex=emu_params['FlaringIndex'], fields=['vr', 'vphi'])
-        mse_varp[varied_par].append([ (((all_emulations_vp - testset[i].reshape(1,2,256,256))*mask)**2).mean(axis=(-1,-2)) for mask in [mask1,mask2]])
+        all_emulations_vp = []
+        for j in tqdm(range(5), desc='sing'):
+            all_emulations_vp.append(emu.emulate(alpha=emu_params['Alpha'][j*20:(j+1)*20],
+                                            h=emu_params['AspectRatio'][j*20:(j+1)*20],
+                                            planetMass=emu_params['PlanetMass'][j*20:(j+1)*20],
+                                            sigmaSlope=emu_params['SigmaSlope'][j*20:(j+1)*20],
+                                            flaringIndex=emu_params['FlaringIndex'][j*20:(j+1)*20], fields=['vr', 'vphi']).cpu())
+        all_emulations_vp = np.concatenate(all_emulations_vp)
+        print(all_emulations_vp.shape)
+        mse_varp[varied_par].append((((all_emulations_vp - testset[i].reshape(1,2,256,256))*mask1.reshape(1,1,256,256))**2).mean(axis=(-1,-2)))
 
 for par in parameters:
     mse_varp[par] = np.array(mse_varp[par])
