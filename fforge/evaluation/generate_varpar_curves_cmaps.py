@@ -15,7 +15,7 @@ N = 20
 Rp = 261 #au
 phip = 57*np.pi/180
 #testset_cmaps = np.load('cmaps_from_simulations_testset_parfile_R261_phi0.99_hd163296like3corr.npy')
-savecmaps_filename = 'cmaps_emulations_small_ALLalpha1e-3.h5'
+savecmaps_filename = 'cmaps_emulations_small_a1e-2_coorect.h5'
 
 #setup emulator
 labels = ["vphi", "vr"]
@@ -107,7 +107,7 @@ try:
                 emu_params_sing = {
                         "R_p": Rp * u.au,
                         "phi_p": phip,
-                        "alpha": 1e-3,
+                        "alpha": 1e-2,
                         "h": emu_params['AspectRatio'][j],
                         "planetMass": emu_params['PlanetMass'][j],
                         "flaringIndex": emu_params['FlaringIndex'][j],

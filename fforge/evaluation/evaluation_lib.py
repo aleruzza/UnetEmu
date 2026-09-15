@@ -53,6 +53,7 @@ def get_best(emulations, testset, sigma, mse={}, grids=grids):
 Returns the best estimate and errors for each parameter given the emulations and simulations (or the mse).
 Uses a gaussian likelihood computed from the mse (which should be already normalized by sigma if provided as an argument)
 Returns best estimate and uncertainties based on the 16th, 50th and 84th percentiles of the likelihood.
+mse must be a dictionary with the paraameters as keys.
 '''
 def get_best_likeeqpost(emulations, testset, sigma, mse={}, grids=grids):
     bestest = {}
